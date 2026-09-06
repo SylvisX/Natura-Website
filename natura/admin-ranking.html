@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konfigurasi Ranking — NATURA Admin</title>
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #021a10;
+      --card-bg: rgba(6, 32, 20, 0.7);
+      --card-border: rgba(34, 197, 94, 0.35);
+      --green-glow: #22c55e;
+      --green-glow-subtle: rgba(34, 197, 94, 0.2);
+      --text-muted: #83a392;
+      --text-light: #e2ece6;
+      --accent-lime: #a6ff4d;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.25) 0%, transparent 75%),
+        linear-gradient(rgba(34, 197, 94, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 197, 94, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: var(--text-light);
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .admin-wrapper { display: flex; min-height: 100vh; }
+
+    .admin-sidebar {
+      width: 260px;
+      background: rgba(3, 20, 12, 0.85);
+      border-right: 1px solid var(--card-border);
+      padding: 2rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+      padding-left: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .brand-logo-wrap img { width: 32px; height: 32px; object-fit: contain; }
+    .brand-logo-wrap span { font-weight: 800; font-size: 1.35rem; letter-spacing: 1.5px; color: #fff; }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      padding-left: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .admin-nav { list-style: none; padding: 0; margin: 0; }
+    .admin-nav-item { margin-bottom: 0.5rem; }
+
+    .admin-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0.75rem 1rem;
+      color: #a8c3b3;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .admin-nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+
+    .admin-nav-link.active {
+      background: rgba(34, 197, 94, 0.2);
+      color: #ffffff;
+      border: 1px solid var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+    }
+
+    .admin-content { flex-grow: 1; padding: 2.2rem 3rem; overflow-y: auto; }
+
+    .admin-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+    .admin-header h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: 1.5px; color: #fff; margin: 0; text-transform: uppercase; }
+    .admin-header p { color: var(--text-muted); font-size: 0.95rem; margin-top: 4px; }
+
+    .admin-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(8, 38, 24, 0.85);
+      border: 1px solid var(--card-border);
+      padding: 6px 18px 6px 8px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .admin-user-badge:hover {
+      background: rgba(34, 197, 94, 0.25);
+      border-color: var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .admin-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .admin-user-name { font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; color: #fff; }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.35rem 1.6rem;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--green-glow);
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+    }
+
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; margin-bottom: 0.6rem; }
+    .stat-value { font-size: 2.2rem; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 0.6rem; }
+    .stat-sub { font-size: 0.78rem; color: var(--green-glow); font-weight: 600; }
+
+    .podium-card-mini {
+      background: rgba(4, 24, 15, 0.85);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .podium-card-mini.rank-1 {
+      border-color: var(--accent-lime);
+      box-shadow: 0 0 20px rgba(166, 255, 77, 0.25);
+    }
+
+    .medal-badge {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.2rem;
+      border-radius: 50%;
+    }
+
+    .medal-badge.gold { background: linear-gradient(135deg, #ffe259, #ffa751); color: #000; box-shadow: 0 0 12px rgba(255, 226, 89, 0.5); }
+    .medal-badge.silver { background: linear-gradient(135deg, #e0e0e0, #f5f5f5); color: #000; box-shadow: 0 0 12px rgba(255, 255, 255, 0.4); }
+    .medal-badge.bronze { background: linear-gradient(135deg, #f09819, #edde5d); color: #000; box-shadow: 0 0 12px rgba(240, 152, 25, 0.4); }
+
+    .podium-user { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .podium-pts { font-size: 0.95rem; font-weight: 700; color: var(--accent-lime); }
+
+    .search-input {
+      background: rgba(4, 24, 15, 0.7);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      border-radius: 30px;
+      padding: 0.55rem 1.2rem;
+      font-size: 0.9rem;
+      width: 100%;
+      max-width: 320px;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      background: rgba(4, 24, 15, 0.9);
+      border-color: var(--green-glow);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+      outline: none;
+      color: #fff;
+    }
+
+    .btn-natura-primary {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid var(--green-glow);
+      color: #ffffff;
+      padding: 0.55rem 1.4rem;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn-natura-primary:hover {
+      background: var(--green-glow);
+      color: #021a10;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-natura-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text-light);
+      padding: 0.55rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    .btn-natura-outline:hover { border-color: #ef4444; color: #ef4444; }
+
+    .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    .admin-table th { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; padding: 0 1rem 0.5rem 1rem; }
+    .admin-table td {
+      background: rgba(4, 24, 15, 0.6);
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      color: #e2ece6;
+      vertical-align: middle;
+    }
+
+    .admin-table tr td:first-child { border-left: 1px solid var(--card-border); border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+    .admin-table tr td:last-child { border-right: 1px solid var(--card-border); border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+
+    .rank-pill { font-weight: 900; font-size: 0.95rem; color: var(--accent-lime); min-width: 40px; display: inline-block; }
+    .user-info-cell { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+
+    .pts-badge {
+      background: rgba(166, 255, 77, 0.12);
+      border: 1px solid rgba(166, 255, 77, 0.4);
+      color: var(--accent-lime);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .status-pill { font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-left: 6px; }
+    .status-pill.aktif { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    .status-pill.suspend { background: rgba(234, 179, 8, 0.2); color: #eab308; }
+    .status-pill.nonaktif { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+    .btn-natura-edit {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-natura-edit:hover { background: var(--green-glow); color: #021a10; box-shadow: 0 0 12px rgba(34, 197, 94, 0.4); transform: translateY(-1px); }
+
+    .btn-natura-delete {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-natura-delete:hover { background: #ef4444; color: #ffffff; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); transform: translateY(-1px); }
+
+    .modal-content.member-edit-modal {
+      background: #03180e;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 22px;
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.8);
+      color: #e2ece6;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .modal-title-custom { font-size: 1.5rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1.2; }
+    .modal-subtitle-custom { font-size: 0.82rem; color: var(--text-muted); margin-top: 3px; }
+
+    .member-profile-card {
+      background: rgba(6, 38, 22, 0.5);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 16px;
+      padding: 0.85rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .member-avatar-circle {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #f0eedb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0d2e1f;
+      flex-shrink: 0;
+    }
+
+    .member-name-text { font-weight: 800; font-size: 1.1rem; color: #ffffff; line-height: 1.2; }
+    .member-meta-text { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    .stat-box-container {
+      background: rgba(6, 38, 22, 0.5);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      flex: 1;
+    }
+
+    .stat-box-title { font-size: 0.78rem; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+    .stat-box-value { font-size: 1.5rem; font-weight: 800; color: #ffffff; line-height: 1; }
+
+    .section-label-custom { font-size: 0.88rem; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+
+    .pts-adjust-wrapper { display: flex; align-items: center; gap: 12px; }
+
+    .btn-pts-step {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(6, 38, 22, 0.8);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #ffffff;
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .btn-pts-step:hover { background: rgba(34, 197, 94, 0.25); border-color: var(--green-glow); }
+
+    .pts-display-input {
+      flex-grow: 1;
+      background: rgba(3, 20, 12, 0.8);
+      border: 1px solid var(--green-glow);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+      color: var(--accent-lime);
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-align: center;
+      border-radius: 12px;
+      height: 44px;
+    }
+
+    .reason-textarea {
+      background: rgba(6, 38, 22, 0.5);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      resize: none;
+      min-height: 52px;
+    }
+
+    .status-options-grid { display: flex; gap: 10px; }
+
+    .btn-status-pill {
+      flex: 1;
+      padding: 0.65rem 0.5rem;
+      border-radius: 12px;
+      background: rgba(6, 38, 22, 0.5);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-status-pill.active {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .modal-btn-cancel {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 0.7rem 1.5rem;
+      flex: 1;
+    }
+
+    .modal-btn-save {
+      background: #a6ff4d;
+      color: #021a10;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      padding: 0.7rem 1.5rem;
+      flex: 1;
+    }
+
+    .form-control.natura-form-input {
+      background: rgba(6, 32, 20, 0.9);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      border-radius: 12px;
+    }
+
+    .modal-backdrop.show {
+      opacity: 0.75;
+      backdrop-filter: blur(8px);
+    }
+
+    .custom-modal-content {
+      background: rgba(3, 20, 12, 0.95) !important;
+      border: 1px solid var(--card-border) !important;
+      border-radius: 24px !important;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(34, 197, 94, 0.15);
+      color: #fff;
+      position: relative;
+    }
+
+    .btn-close-custom {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      z-index: 10;
+    }
+
+    .btn-close-custom:hover {
+      color: #fff;
+    }
+
+    .modal-icon-wrap {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+    }
+
+    .modal-title-text {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #fff;
+      font-size: 1.45rem;
+    }
+
+    .modal-subtitle-text {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .btn-custom-primary {
+      background: #86efac !important;
+      color: #021a10 !important;
+      font-weight: 700 !important;
+      border-radius: 50px !important;
+      padding: 12px 24px !important;
+      border: none !important;
+      font-size: 0.95rem;
+      transition: all 0.25s ease !important;
+    }
+
+    .btn-custom-primary:hover {
+      background: #4ade80 !important;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-custom-secondary {
+      background: transparent !important;
+      color: #e2ece6 !important;
+      font-weight: 600 !important;
+      border-radius: 50px !important;
+      padding: 12px 24px !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      font-size: 0.95rem;
+      transition: all 0.25s ease !important;
+    }
+
+    .btn-custom-secondary:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-wrapper">
+
+    <aside class="admin-sidebar">
+      <a href="admin-dashboard.html" class="brand-logo-wrap">
+        <img src="logo.png" alt="NATURA Logo" onerror="this.src='leaf logo.png'">
+        <span>NATURA.</span>
+      </a>
+
+      <div class="nav-section-title">UTAMA</div>
+      <ul class="admin-nav">
+        <li class="admin-nav-item">
+          <a href="admin-dashboard.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="report-verif.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Verifikasi Laporan
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="admin-ranking.html" class="admin-nav-link active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Ranking
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="voucher-umkm.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            Voucher & UMKM
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="petugas-kebersihan.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Petugas Kebersihan
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-section-title">LAINNYA</div>
+      <ul class="admin-nav">
+        <li class="admin-nav-item">
+          <a href="pengaturan.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Pengaturan
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="admin-content">
+      <div class="admin-header anim-header">
+        <div>
+          <h1>KELOLA RANKING</h1>
+          <p>Kelola dan edit papan peringkat pengguna asli NATURA</p>
+        </div>
+        <div class="admin-user-badge" onclick="logoutAdmin()" title="Klik untuk Logout">
+          <div class="admin-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <span class="admin-user-name">ADMIN</span>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4 anim-cards">
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Total Peserta Terdaftar</div>
+            <div class="stat-value" id="statTotalUsers">0</div>
+            <div class="stat-sub">Aktif di Leaderboard</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Skor Tertinggi Bulan Ini</div>
+            <div class="stat-value" id="statTopScore">0 pts</div>
+            <div class="stat-sub" id="statTopUser">Leader: -</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Status Periode</div>
+            <div class="stat-value" style="font-size: 1.8rem; color: var(--accent-lime);">September 2026</div>
+            <div class="stat-sub">Reset terjadwal akhir bulan</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4 anim-top3">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h2 class="h6 font-weight-bold m-0 text-white">Top 3</h2>
+          <span class="stat-label">Tampilan langsung pada halaman ranking</span>
+        </div>
+        <div class="row g-3" id="podiumPreviewRow">
+
+        </div>
+      </div>
+
+      <div class="glass-card anim-table">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+          <div>
+            <h2 class="h6 font-weight-bold m-0 text-white">Daftar Peringkat Lengkap</h2>
+            <div class="stat-label">Edit poin dan status member secara langsung</div>
+          </div>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <button class="btn-natura-primary me-2" onclick="openAddModal()">+ Tambah Peserta</button>
+            <input type="text" class="search-input" id="searchRankInput" placeholder="Cari pengguna..." onkeyup="filterRankings()">
+            <button class="btn-natura-outline" onclick="clearAllRankings()" title="Kosongkan semua peserta">Bersihkan Data</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Pengguna</th>
+                <th>Poin (pts)</th>
+                <th>Status</th>
+                <th>Terakhir Diperbarui</th>
+                <th class="text-end">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="rankingsTableBody">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal fade" id="editRankModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content member-edit-modal">
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div>
+            <h3 class="modal-title-custom">Edit Data Member</h3>
+            <div class="modal-subtitle-custom">Perubahan akan langsung tersimpan ke akun member</div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <input type="hidden" id="editUserId">
+
+        <div class="member-profile-card mb-3">
+          <div class="member-avatar-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <div>
+            <div class="member-name-text" id="editProfileName">-</div>
+            <div class="member-meta-text" id="editProfileMeta">-</div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+          <div class="stat-box-container">
+            <div class="stat-box-title">Jumlah Laporan</div>
+            <div class="stat-box-value" id="editTotalReports">0</div>
+          </div>
+          <div class="stat-box-container">
+            <div class="stat-box-title">Laporan Disetujui</div>
+            <div class="stat-box-value" id="editApprovedReports">0</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="section-label-custom">Koreksi Total Poin</div>
+          <div class="pts-adjust-wrapper">
+            <button type="button" class="btn-pts-step" onclick="stepPoints(-100)">-</button>
+            <input type="number" class="pts-display-input" id="editUserPts" value="0">
+            <button type="button" class="btn-pts-step" onclick="stepPoints(100)">+</button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="modal-subtitle-custom mb-1" style="color: #ffffff; font-weight: 500;">Alasan perubahan (wajib diisi untuk log audit)</div>
+          <textarea class="form-control reason-textarea" id="editAuditReason" placeholder="Contoh: Koreksi poin verifikasi laporan #402"></textarea>
+        </div>
+
+        <div class="mb-4">
+          <div class="section-label-custom">Status Akun</div>
+          <div class="status-options-grid">
+            <div class="btn-status-pill active" id="statusAktif" onclick="selectStatus('Aktif')">Aktif</div>
+            <div class="btn-status-pill" id="statusSuspend" onclick="selectStatus('Suspend')">Suspend</div>
+            <div class="btn-status-pill" id="statusNonaktif" onclick="selectStatus('Nonaktifkan')">Nonaktifkan</div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="button" class="modal-btn-cancel" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="modal-btn-save" onclick="saveUserEdit()">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addRankModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content member-edit-modal">
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div>
+            <h3 class="modal-title-custom">Tambah Peserta Baru</h3>
+            <div class="modal-subtitle-custom">Tambahkan akun ke papan peringkat</div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0 mb-3">
+          <div class="mb-3">
+            <label class="stat-label mb-1">Nama Pengguna</label>
+            <input type="text" class="form-control natura-form-input" id="addUserName" placeholder="Contoh: Budi Prasetyo">
+          </div>
+          <div class="mb-3">
+            <label class="stat-label mb-1">Email</label>
+            <input type="email" class="form-control natura-form-input" id="addUserEmail" placeholder="Contoh: budi@email.com">
+          </div>
+          <div class="mb-3">
+            <label class="stat-label mb-1">Poin Awal (pts)</label>
+            <input type="number" class="form-control natura-form-input" id="addUserPts" value="1000">
+          </div>
+        </div>
+        <div class="d-flex gap-3">
+          <button type="button" class="modal-btn-cancel" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="modal-btn-save" onclick="addNewUser()">Tambah Ke Leaderboard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custom-modal-content">
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Tutup">&times;</button>
+        <div class="modal-body text-center p-4 p-md-5">
+          <div class="modal-icon-wrap mb-3">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </div>
+          <h4 class="modal-title-text mb-2">Konfirmasi Keluar</h4>
+          <p class="modal-subtitle-text mb-4">Apakah Anda yakin ingin keluar dari Admin Dashboard NATURA?</p>
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-custom-primary" onclick="confirmLogout()">Keluar Sekarang</button>
+            <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">Nanti Saja</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+  let selectedStatusVal = "Aktif";
+
+  const defaultRankings = [];
+
+  function getExactUserPts(username) {
+    if (!username) return 0;
+    const activeUser = localStorage.getItem("natura_user");
+
+    const possibleKeys = [
+      `natura_user_points_${username}`,
+      `natura_user_pts_${username}`,
+      ...(activeUser && activeUser.toLowerCase() === username.toLowerCase()
+        ? ["natura_user_pts", "natura_points", "natura_pts", "user_pts", "points", "total_points", "total_pts"]
+        : [])
+    ];
+
+    for (const key of possibleKeys) {
+      const val = localStorage.getItem(key);
+      if (val !== null && val !== "" && val !== "150000" && val !== "150,000") {
+        const parsed = parseInt(String(val).replace(/,/g, ''), 10);
+        if (!isNaN(parsed) && parsed > 0) {
+          return parsed;
+        }
+      }
+    }
+
+    return 0;
+  }
+
+  function getRankings() {
+    const rankingsMap = new Map();
+
+    const stored = localStorage.getItem("natura_rankings");
+    if (stored !== null) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          parsed.forEach(u => {
+            if (u && u.name && u.name.toLowerCase() !== 'admin') {
+              rankingsMap.set(u.name.toLowerCase(), { ...u });
+            }
+          });
+        }
+      } catch (e) {
+        console.error("Error parsing natura_rankings:", e);
+      }
+    }
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith("natura_user_points_") || key.startsWith("natura_user_pts_"))) {
+        const uname = key.replace("natura_user_points_", "").replace("natura_user_pts_", "");
+        if (uname && uname.toLowerCase() !== 'admin' && !rankingsMap.has(uname.toLowerCase())) {
+          const pts = getExactUserPts(uname);
+          if (pts > 0) {
+            rankingsMap.set(uname.toLowerCase(), {
+              id: Date.now() + Math.floor(Math.random() * 1000),
+              name: uname,
+              email: `${uname.toLowerCase().replace(/\s+/g, '.')}@email.com`,
+              pts: pts,
+              status: "Aktif",
+              joined: "2026",
+              reports: 0,
+              approved: 0,
+              updated: "Hari ini"
+            });
+          }
+        }
+      }
+    }
+
+    const activeUser = localStorage.getItem("natura_user");
+    if (activeUser && activeUser.toLowerCase() !== 'admin') {
+      const activePts = getExactUserPts(activeUser);
+      const lowerName = activeUser.toLowerCase();
+      if (rankingsMap.has(lowerName)) {
+        if (activePts > 0) rankingsMap.get(lowerName).pts = activePts;
+      } else if (activePts > 0) {
+        rankingsMap.set(lowerName, {
+          id: Date.now(),
+          name: activeUser,
+          email: `${activeUser.toLowerCase().replace(/\s+/g, '.')}@email.com`,
+          pts: activePts,
+          status: "Aktif",
+          joined: "2026",
+          reports: 0,
+          approved: 0,
+          updated: "Hari ini"
+        });
+      }
+    }
+
+    let rankings = Array.from(rankingsMap.values()).map(u => {
+      const exactPts = getExactUserPts(u.name);
+      if (exactPts > 0) u.pts = exactPts;
+      return u;
+    });
+
+    rankings = rankings.filter(u => Number(u.pts) > 0 && u.name.toLowerCase() !== 'admin');
+    rankings.sort((a, b) => (Number(b.pts) || 0) - (Number(a.pts) || 0));
+
+    return rankings;
+  }
+
+  function saveRankings(data) {
+    data = data.filter(u => Number(u.pts) > 0);
+    data.sort((a, b) => (Number(b.pts) || 0) - (Number(a.pts) || 0));
+    localStorage.setItem("natura_rankings", JSON.stringify(data));
+    renderAll();
+  }
+
+  function renderAll() {
+    const rankings = getRankings();
+    renderMetrics(rankings);
+    renderPodiumPreview(rankings);
+    renderTable(rankings);
+  }
+
+  function renderMetrics(data) {
+    const activeUsers = data.filter(u => (u.status || 'Aktif') === "Aktif");
+    document.getElementById("statTotalUsers").textContent = activeUsers.length;
+    if (activeUsers.length > 0) {
+      const topPts = Number(activeUsers[0].pts) || 0;
+      document.getElementById("statTopScore").textContent = topPts.toLocaleString('id-ID') + " pts";
+      document.getElementById("statTopUser").textContent = "Leader: " + (activeUsers[0].name || '-');
+    } else {
+      document.getElementById("statTopScore").textContent = "0 pts";
+      document.getElementById("statTopUser").textContent = "Leader: -";
+    }
+  }
+
+  function renderPodiumPreview(data) {
+    const row = document.getElementById("podiumPreviewRow");
+    if (!row) return;
+    row.innerHTML = "";
+
+    const activeUsers = data.filter(u => (u.status || 'Aktif') === "Aktif");
+    const top3 = activeUsers.slice(0, 3);
+    const badges = [
+      { class: "gold", label: "1" },
+      { class: "silver", label: "2" },
+      { class: "bronze", label: "3" }
+    ];
+
+    for (let i = 0; i < 3; i++) {
+      const item = top3[i] || { name: "-", pts: 0, id: null };
+      const badge = badges[i];
+      const ptsVal = Number(item.pts) || 0;
+
+      row.innerHTML += `
+        <div class="col-md-4">
+          <div class="podium-card-mini ${i === 0 ? 'rank-1' : ''}">
+            <div class="medal-badge ${badge.class}">${badge.label}</div>
+            <div class="podium-user">${escapeHtml(item.name || '-')}</div>
+            <div class="podium-pts">${ptsVal.toLocaleString('id-ID')} pts</div>
+            ${item.id ? `
+              <button class="btn-natura-edit mt-2 w-100 justify-content-center" onclick="quickEditUser('${item.id}')">
+                Edit Rank #${i+1}
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  function renderTable(data) {
+    const tbody = document.getElementById("rankingsTableBody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Belum ada akun peserta terdaftar dengan poin > 0.</td></tr>`;
+      return;
+    }
+
+    const fullRankings = getRankings();
+    let tableHtml = "";
+
+    data.forEach((user, index) => {
+      const realIndex = fullRankings.findIndex(u => String(u.id) === String(user.id));
+      const rank = realIndex !== -1 ? realIndex + 1 : index + 1;
+      const st = user.status || 'Aktif';
+      const statusClass = st.toLowerCase().startsWith('nonaktif') ? 'nonaktif' : st.toLowerCase();
+      const ptsVal = Number(user.pts) || 0;
+
+      tableHtml += `
+        <tr>
+          <td><span class="rank-pill">#${rank}</span></td>
+          <td>
+            <div class="user-info-cell">
+              <div class="admin-avatar" style="width:28px; height:28px; font-size: 0.75rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              <span>${escapeHtml(user.name || '-')}</span>
+            </div>
+          </td>
+          <td><span class="pts-badge">${ptsVal.toLocaleString('id-ID')} pts</span></td>
+          <td><span class="status-pill ${statusClass}">${escapeHtml(st)}</span></td>
+          <td style="color: var(--text-muted); font-size: 0.8rem;">${escapeHtml(user.updated || 'Hari ini')}</td>
+          <td class="text-end">
+            <div class="d-inline-flex gap-1">
+              <button class="btn-natura-edit" onclick="quickEditUser('${user.id}')">Edit</button>
+              <button class="btn-natura-delete" onclick="deleteUser('${user.id}')" title="Hapus">Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = tableHtml;
+  }
+
+  function quickEditUser(id) {
+    const rankings = getRankings();
+    const target = rankings.find(u => String(u.id) === String(id));
+    if (!target) return;
+
+    document.getElementById("editUserId").value = target.id;
+    document.getElementById("editProfileName").textContent = target.name || '-';
+
+    const userEmail = target.email || (target.name ? target.name.toLowerCase().replace(/\s+/g, '.') + "@email.com" : "user@email.com");
+    const userJoined = target.joined || "2026";
+    document.getElementById("editProfileMeta").textContent = `${userEmail} · Bergabung ${userJoined}`;
+
+    document.getElementById("editTotalReports").textContent = target.reports || 0;
+    document.getElementById("editApprovedReports").textContent = target.approved || 0;
+    document.getElementById("editUserPts").value = Number(target.pts) || 0;
+    document.getElementById("editAuditReason").value = "";
+
+    selectStatus(target.status || "Aktif");
+
+    const modalEl = document.getElementById("editRankModal");
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+  }
+
+  function deleteUser(id) {
+    if (confirm("Apakah Anda yakin ingin menghapus peserta ini dari leaderboard?")) {
+      let rankings = getRankings();
+      const target = rankings.find(u => String(u.id) === String(id));
+      if (target && target.name) {
+        localStorage.removeItem(`natura_user_points_${target.name}`);
+        localStorage.removeItem(`natura_user_pts_${target.name}`);
+      }
+      rankings = rankings.filter(u => String(u.id) !== String(id));
+      saveRankings(rankings);
+    }
+  }
+
+  function stepPoints(amount) {
+    const input = document.getElementById("editUserPts");
+    let currentVal = parseInt(input.value) || 0;
+    currentVal = Math.max(0, currentVal + amount);
+    input.value = currentVal;
+  }
+
+  function selectStatus(status) {
+    selectedStatusVal = status;
+    document.getElementById("statusAktif").classList.remove("active");
+    document.getElementById("statusSuspend").classList.remove("active");
+    document.getElementById("statusNonaktif").classList.remove("active");
+
+    if (status === "Aktif") {
+      document.getElementById("statusAktif").classList.add("active");
+    } else if (status === "Suspend") {
+      document.getElementById("statusSuspend").classList.add("active");
+    } else if (status === "Nonaktifkan" || status === "Nonaktif") {
+      document.getElementById("statusNonaktif").classList.add("active");
+    }
+  }
+
+  function saveUserEdit() {
+    const id = document.getElementById("editUserId").value;
+    const pts = parseInt(document.getElementById("editUserPts").value);
+
+    if (isNaN(pts)) {
+      alert("Mohon masukkan jumlah poin yang valid.");
+      return;
+    }
+
+    const rankings = getRankings();
+    const target = rankings.find(u => String(u.id) === String(id));
+    if (target) {
+      target.pts = Math.max(0, pts);
+      target.status = selectedStatusVal;
+      target.updated = "Baru saja";
+
+      const currentUsername = localStorage.getItem("natura_user");
+      if (currentUsername && target.name && target.name.toLowerCase() === currentUsername.toLowerCase()) {
+        localStorage.setItem("natura_user_pts", target.pts);
+      }
+      if (target.name) {
+        localStorage.setItem(`natura_user_points_${target.name}`, target.pts);
+        localStorage.setItem(`natura_user_pts_${target.name}`, target.pts);
+      }
+
+      saveRankings(rankings);
+    }
+
+    const modalEl = document.getElementById("editRankModal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
+  }
+
+  function openAddModal() {
+    document.getElementById("addUserName").value = "";
+    document.getElementById("addUserEmail").value = "";
+    document.getElementById("addUserPts").value = "1000";
+    const modalEl = document.getElementById("addRankModal");
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+  }
+
+  function addNewUser() {
+    const name = document.getElementById("addUserName").value.trim();
+    const email = document.getElementById("addUserEmail").value.trim();
+    const pts = parseInt(document.getElementById("addUserPts").value);
+
+    if (!name || isNaN(pts) || pts <= 0) {
+      alert("Isi nama dan poin lebih dari 0.");
+      return;
+    }
+
+    const rankings = getRankings();
+    const newEntry = {
+      id: Date.now(),
+      name: name,
+      email: email || (name.toLowerCase().replace(/\s+/g, '.') + "@email.com"),
+      joined: "Sep 2026",
+      reports: 0,
+      approved: 0,
+      pts: pts,
+      status: "Aktif",
+      updated: "Baru saja"
+    };
+
+    localStorage.setItem(`natura_user_points_${name}`, pts);
+    localStorage.setItem(`natura_user_pts_${name}`, pts);
+    rankings.push(newEntry);
+    saveRankings(rankings);
+
+    const modalEl = document.getElementById("addRankModal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
+  }
+
+  function clearAllRankings() {
+    if (confirm("Apakah Anda yakin ingin membersihkan seluruh data peserta leaderboard?")) {
+      localStorage.setItem("natura_rankings", JSON.stringify([]));
+      const activeUser = localStorage.getItem("natura_user");
+      if (activeUser) {
+        localStorage.setItem("natura_user_pts", "0");
+        localStorage.setItem(`natura_user_points_${activeUser}`, "0");
+      }
+      renderAll();
+    }
+  }
+
+  function filterRankings() {
+    const query = document.getElementById("searchRankInput").value.toLowerCase();
+    const rankings = getRankings();
+    const filtered = rankings.filter(u => u.name && u.name.toLowerCase().includes(query));
+    renderTable(filtered);
+  }
+
+  function logoutAdmin() {
+    const modalEl = document.getElementById("logoutModal");
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+  }
+
+  function confirmLogout() {
+    localStorage.removeItem("natura_user");
+    localStorage.removeItem("natura_role");
+    window.location.replace("login.html");
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    });
+  }
+
+  window.logoutAdmin = logoutAdmin;
+  window.confirmLogout = confirmLogout;
+  window.quickEditUser = quickEditUser;
+  window.deleteUser = deleteUser;
+  window.openAddModal = openAddModal;
+  window.clearAllRankings = clearAllRankings;
+  window.filterRankings = filterRankings;
+  window.stepPoints = stepPoints;
+  window.selectStatus = selectStatus;
+  window.saveUserEdit = saveUserEdit;
+  window.addNewUser = addNewUser;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderAll();
+  });
+
+  window.addEventListener("storage", (e) => {
+    if (e.key === "natura_rankings" || e.key === "natura_user_pts" || e.key === "natura_user") {
+      renderAll();
+    }
+  });
+</script>
+</body>
+</html>
