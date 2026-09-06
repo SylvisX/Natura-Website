@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050f08">
+<link rel="icon" href="logo.png" type="image/png">
+
+<!-- Bootstrap 5 & Custom Style -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<title>Upload Foto Before — Natura</title>
+
+<style>
+  body {
+    background-color: #040e07;
+    background-image: 
+      linear-gradient(rgba(30, 70, 45, 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30, 70, 45, 0.22) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: #ffffff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* CONTAINER & CARD LAYOUT */
+  .upload-container {
+    max-width: 1100px;
+    margin: 110px auto 40px;
+    padding: 0 20px;
+  }
+
+  .upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  @media (max-width: 991px) {
+    .upload-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .upload-card {
+    background: rgba(14, 31, 20, 0.65);
+    border: 1px solid rgba(52, 98, 63, 0.5);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 16px;
+  }
+
+  /* DROP ZONE / FILE UPLOAD */
+  .upload-dropzone {
+    border: 2px dashed rgba(80, 150, 95, 0.5);
+    border-radius: 16px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(8, 20, 12, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upload-dropzone:hover {
+    border-color: #8aff3d;
+    background: rgba(16, 40, 24, 0.5);
+  }
+
+  .upload-icon {
+    width: 28px;
+    height: 28px;
+    stroke: #6b9e78;
+    margin-bottom: 8px;
+  }
+
+  .upload-hint {
+    font-size: 13px;
+    color: #7b9e84;
+    font-weight: 500;
+  }
+
+  .file-input {
+    display: none;
+  }
+
+  .image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+  }
+
+  /* INPUT FIELDS */
+  .form-group-custom {
+    margin-top: 24px;
+  }
+
+  .form-label-custom {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .form-control-custom {
+    width: 100%;
+    background: rgba(6, 17, 10, 0.7);
+    border: 1px solid rgba(52, 98, 63, 0.6);
+    border-radius: 16px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-size: 13px;
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-control-custom:focus {
+    border-color: #8aff3d;
+  }
+
+  .form-control-custom::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  /* MAP SECTION */
+  .map-subtitle {
+    font-size: 13px;
+    color: #9cb8a3;
+    margin-bottom: 16px;
+  }
+
+  .map-frame {
+    width: 100%;
+    height: 220px;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    background: #192a20;
+    border: 1px solid rgba(52, 98, 63, 0.5);
+  }
+
+  .btn-my-location {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(10, 22, 14, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+  }
+
+  .btn-my-location::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #ff4d4d;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* SUBMIT BUTTON & FOOTNOTE */
+  .btn-submit-report {
+    width: 100%;
+    background: #a6ff4d;
+    border: none;
+    color: #040e07;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 14px;
+    border-radius: 100px;
+    margin-top: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 20px rgba(166, 255, 77, 0.3);
+  }
+
+  .btn-submit-report:hover {
+    background: #b8ff66;
+    transform: translateY(-1px);
+  }
+
+  .submit-disclaimer {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .natura-dropdown-menu {
+    background-color: #06130b !important;
+    border: 1px solid rgba(52, 98, 63, 0.8) !important;
+    border-radius: 14px !important;
+  }
+
+  .natura-dropdown-menu .dropdown-item {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  /* CUSTOM SUCCESS MODAL */
+  .custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(2, 8, 4, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+  }
+
+  .custom-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .custom-modal-card {
+    background: #08160c;
+    border: 1px solid rgba(80, 150, 95, 0.35);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border-radius: 28px;
+    padding: 36px 28px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+  }
+
+  .custom-modal-overlay.active .custom-modal-card {
+    transform: scale(1);
+  }
+
+  .custom-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .custom-modal-close:hover {
+    color: #ffffff;
+  }
+
+  .custom-modal-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid #8aff3d;
+    box-shadow: 0 0 15px rgba(138, 255, 61, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    background: rgba(138, 255, 61, 0.05);
+  }
+
+  .custom-modal-icon-wrapper svg {
+    width: 30px;
+    height: 30px;
+    stroke: #8aff3d;
+  }
+
+  .custom-modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 12px;
+  }
+
+  .custom-modal-message {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+
+  .custom-modal-btn-primary {
+    width: 100%;
+    background: #a6ff4d;
+    border: none;
+    color: #040e07;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 13px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(166, 255, 77, 0.25);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .custom-modal-btn-primary:hover {
+    background: #b8ff66;
+    color: #040e07;
+  }
+
+  .custom-modal-btn-secondary {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: block;
+  }
+
+  .custom-modal-btn-secondary:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+  }
+</style>
+</head>
+<body>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- UPLOAD BEFORE CONTENT -->
+  <main class="upload-container">
+    <form id="uploadBeforeForm" onsubmit="handleReportSubmit(event)" class="upload-grid">
+      
+      <!-- LEFT CARD: UPLOAD & LOCATION NOTES -->
+      <div class="upload-card">
+        <div>
+          <!-- STEP 1: UPLOAD FOTO BEFORE -->
+          <h2 class="section-title">1. Upload Foto Before</h2>
+          <div class="upload-dropzone" onclick="document.getElementById('fileInputBefore').click()">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span class="upload-hint" id="uploadHintText">JPG/PNG, maks 10MB</span>
+            <img id="imagePreview" class="image-preview" alt="Preview Foto Before">
+          </div>
+          <input type="file" id="fileInputBefore" class="file-input" accept="image/*" onchange="previewFile(this)">
+
+          <!-- STEP 2: CATATAN LOKASI -->
+          <h2 class="section-title mt-4">2. Catatan Lokasi</h2>
+          
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="roadName">Nama Jalan</label>
+            <textarea id="roadName" class="form-control-custom" rows="2" placeholder="Contoh: Jalan Raya Kampung Sunda Besar 2, RT07/RW08......"></textarea>
+          </div>
+
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="locationNotes">Patokan / Catatan Lainnya</label>
+            <textarea id="locationNotes" class="form-control-custom" rows="3" placeholder="Disamping alfamart banyak banget sampah yang ganggu disepanjang jalan......"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT CARD: MAP & SUBMIT -->
+      <div class="upload-card">
+        <div>
+          <h2 class="section-title mb-1">3. Tandai Titik Lokasi</h2>
+          <p class="map-subtitle">Klik di peta untuk menaruh pin persis di titik sampahnya</p>
+          
+          <div class="map-frame">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.81956135000001!3d-6.194741350000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5390917b759%3A0x6b45e6782db59a0!2sJakarta!5e0!3m2!1sid!2sid!4v1700000000000" 
+              width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <button type="button" class="btn-my-location" onclick="getLocation()">Lokasi Saya</button>
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" class="btn-submit-report" id="btnSubmit">Kirim Laporan</button>
+          <div class="submit-disclaimer">*kamu akan mendapatkan poin setelah sistem mengaprove hasil laporanmu</div>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- SUCCESS MODAL -->
+  <div id="successModal" class="custom-modal-overlay">
+    <div class="custom-modal-card">
+      <button type="button" class="custom-modal-close" onclick="closeSuccessModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="custom-modal-icon-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h3 class="custom-modal-title">Laporan Berhasil!</h3>
+      <p class="custom-modal-message">
+        Kamu perlu menunggu verifikasi terlebih dahulu dari petugas untuk mengunggah laporan sampah dan mengumpulkan poin!
+      </p>
+      <button type="button" class="custom-modal-btn-primary" onclick="goToNotif()">Lihat Notifikasi</button>
+      <button type="button" class="custom-modal-btn-secondary" onclick="closeSuccessModal()">Nanti Saja</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="navbar-loader.js"></script>
+<script>
+  let uploadedImageBase64 = "";
+
+  function previewFile(input) {
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          uploadedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+          const preview = document.getElementById('imagePreview');
+          const hint = document.getElementById('uploadHintText');
+          preview.src = uploadedImageBase64;
+          preview.style.display = 'block';
+          if (hint) hint.style.display = 'none';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude.toFixed(5);
+          const lng = pos.coords.longitude.toFixed(5);
+          const roadInput = document.getElementById('roadName');
+          if (roadInput && !roadInput.value.includes("Lat:")) {
+            roadInput.value = (roadInput.value ? roadInput.value + " " : "") + `(Lat: ${lat}, Lng: ${lng})`;
+          }
+          alert(`Titik lokasi terdeteksi: Lat ${lat}, Lng ${lng}`);
+        },
+        () => alert("Gagal mengambil lokasi. Pastikan izin GPS diaktifkan.")
+      );
+    } else {
+      alert("Geolokasi tidak didukung oleh browser ini.");
+    }
+  }
+
+  function handleReportSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const username = localStorage.getItem("natura_user") || "User";
+      const reportId = "REP-" + Date.now();
+      
+      // Provide default fallback values if empty
+      const road = document.getElementById('roadName').value.trim() || "Lokasi Umum";
+      const notes = document.getElementById('locationNotes').value.trim() || "Tidak ada catatan tambahan";
+      
+      // Fallback placeholder image SVG if no photo was uploaded
+      const imageToSave = uploadedImageBase64 || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' fill='%23192a20'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%236b9e78'>Foto tidak dilampirkan</text></svg>";
+
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + 
+                            ' - ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+      // 1. Save Report Data
+      const newReport = {
+        id: reportId,
+        user: username,
+        road: road,
+        notes: notes,
+        image: imageToSave,
+        status: "Menunggu Verifikasi",
+        date: formattedDate
+      };
+
+      const existingReports = JSON.parse(localStorage.getItem("natura_reports") || "[]");
+      existingReports.unshift(newReport);
+      localStorage.setItem("natura_reports", JSON.stringify(existingReports));
+
+      // 2. Save Notification Data
+      const newNotif = {
+        id: "NOTIF-" + Date.now(),
+        category: "laporan",
+        title: "Laporan dibuat",
+        desc: `Laporan sampah di ${road} sudah masuk.`,
+        date: formattedDate,
+        reportId: reportId
+      };
+
+      const existingNotifs = JSON.parse(localStorage.getItem("natura_notifs") || "[]");
+      existingNotifs.unshift(newNotif);
+      localStorage.setItem("natura_notifs", JSON.stringify(existingNotifs));
+
+      // Show Custom Success Modal
+      document.getElementById('successModal').classList.add('active');
+
+    } catch (err) {
+      console.error(err);
+      alert("Terjadi kesalahan saat mengirim laporan. Pastikan browser mendukung localStorage.");
+    }
+  }
+
+  function goToNotif() {
+    window.location.href = "notif.html";
+  }
+
+  function closeSuccessModal() {
+    document.getElementById('successModal').classList.remove('active');
+  }
+
+  function renderUserState() {
+    const username = localStorage.getItem("natura_user");
+    const authContainer = document.getElementById("authContainer");
+
+    if (username && authContainer) {
+      authContainer.innerHTML = `
+        <a href="notif.html" class="bell text-decoration-none" title="Notifikasi">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+        </a>
+        <div class="dropdown">
+          <div class="user-pill dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="avatar">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span>${username}</span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end natura-dropdown-menu" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="profile.html">Profil</a></li>
+            <li><hr class="dropdown-divider border-secondary my-1"></li>
+            <li><a class="dropdown-item text-danger" href="#" onclick="logout(event)">Keluar</a></li>
+          </ul>
+        </div>
+      `;
+    }
+  }
+
+  function logout(e) {
+    if (e) e.preventDefault();
+    localStorage.removeItem("natura_user");
+    window.location.href = "login.html";
+  }
+
+  document.addEventListener("DOMContentLoaded", renderUserState);
+</script>
+</body>
+</html>s

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050f08">
+<link rel="icon" href="leaf logo.png" type="image/png">
+
+<!-- Bootstrap 5 & Natura Style -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<title>Detail Voucher — Natura</title>
+
+<style>
+  body {
+    background-color: #040e07;
+    background-image: 
+      linear-gradient(rgba(30, 70, 45, 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30, 70, 45, 0.22) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: #ffffff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .grain {
+    pointer-events: none !important;
+  }
+
+  .user-pill {
+    cursor: pointer;
+    position: relative;
+    z-index: 1051;
+  }
+
+  /* NAVBAR AUTH BUTTONS */
+  .btn-login-nav {
+    background: #a6ff4d;
+    color: #040e07;
+    font-weight: 700;
+    padding: 8px 24px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(166, 255, 77, 0.3);
+    font-size: 14px;
+  }
+
+  .btn-login-nav:hover {
+    background: #b8ff66;
+    color: #040e07;
+  }
+
+  .btn-register-nav {
+    color: #ffffff;
+    border: 1.5px solid rgba(166, 255, 77, 0.5);
+    font-weight: 700;
+    padding: 7px 22px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  /* MAIN DETAIL CARD */
+  .detail-wrapper {
+    max-width: 580px;
+    margin: 105px auto 50px;
+    padding: 0 16px;
+  }
+
+  .voucher-detail-card {
+    background: #c3cfc7;
+    border-radius: 28px;
+    padding: 32px 28px;
+    color: #122416;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  }
+
+  /* VOUCHER HEADER */
+  .voucher-header-info {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .voucher-icon-large {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  }
+
+  .voucher-icon-large img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+  }
+
+  .voucher-main-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #122416;
+    margin: 0 0 2px 0;
+    line-height: 1.2;
+  }
+
+  .voucher-address {
+    font-size: 14px;
+    color: #3b4e41;
+    margin-bottom: 10px;
+  }
+
+  .tag-lokasi {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    padding: 3px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334438;
+  }
+
+  .pts-badge-large {
+    font-size: 30px;
+    font-weight: 900;
+    color: #122416;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .pts-badge-large span {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  /* SUB CARDS */
+  .info-block-card {
+    background: rgba(255, 255, 255, 0.35);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+
+  .block-title-bold {
+    font-size: 16px;
+    font-weight: 800;
+    color: #122416;
+    margin-bottom: 4px;
+  }
+
+  .block-subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #122416;
+    margin-bottom: 10px;
+  }
+
+  .custom-bullets {
+    padding-left: 18px;
+    margin-bottom: 0;
+  }
+
+  .custom-bullets li {
+    font-size: 13px;
+    color: #2b3a2f;
+    line-height: 1.45;
+    margin-bottom: 4px;
+  }
+
+  .custom-bullets li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* BOTTOM ACTION BUTTONS */
+  .action-buttons-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .btn-detail-back {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1.5px solid rgba(18, 36, 22, 0.3);
+    color: #122416;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 42px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-detail-back:hover {
+    background: rgba(255, 255, 255, 0.6);
+    color: #122416;
+  }
+
+  .btn-detail-tukar {
+    background: #a6ff4d;
+    border: none;
+    color: #040e07;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 11px 48px;
+    border-radius: 100px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(166, 255, 77, 0.4);
+  }
+
+  .btn-detail-tukar:hover {
+    background: #b8ff66;
+    box-shadow: 0 6px 20px rgba(166, 255, 77, 0.6);
+    transform: translateY(-1px);
+  }
+
+  /* MODAL CUSTOMIZATION */
+  .natura-modal {
+    background-color: #06130b;
+    border: 1px solid rgba(52, 98, 63, 0.8);
+    border-radius: 20px;
+    color: #ffffff;
+  }
+
+  .natura-dropdown-menu {
+    background-color: #06130b !important;
+    border: 1px solid rgba(52, 98, 63, 0.8) !important;
+    border-radius: 14px !important;
+    padding: 6px 0 !important;
+    min-width: 130px !important;
+  }
+
+  .natura-dropdown-menu .dropdown-item {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 8px 16px;
+  }
+
+  .natura-dropdown-menu .dropdown-item.logout-item {
+    color: #ff6b6b !important;
+  }
+</style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- MAIN VOUCHER CONFIRMATION CARD -->
+  <main class="detail-wrapper">
+    <div class="voucher-detail-card">
+      
+      <!-- TOP HEADER -->
+      <div class="voucher-header-info">
+        <div class="d-flex gap-3 align-items-start">
+          <div class="voucher-icon-large">
+            <img id="detailIcon" src="hot-pot 2.png" alt="Icon Voucher">
+          </div>
+          <div>
+            <h1 class="voucher-main-title" id="detailTitle">Voucher UMKM Ibu Sri</h1>
+            <div class="voucher-address" id="detailAddress">Jl. Kemerdekaan 5, Jakarta Selatan</div>
+            <span class="tag-lokasi">📍 Lokasi</span>
+          </div>
+        </div>
+
+        <div class="pts-badge-large">
+          <span>⭐</span> <span id="detailPoints">1200</span> <span>pts</span>
+        </div>
+      </div>
+
+      <!-- SYARAT & KETENTUAN -->
+      <div class="info-block-card">
+        <div class="block-title-bold" id="detailPromoName">Diskon 10% All Variant Food</div>
+        <div class="block-subtitle">Syarat & Ketentuan</div>
+        <ul class="custom-bullets">
+          <li>Voucher berlaku 30 hari setelah berhasil ditukar.</li>
+          <li>Satu voucher hanya bisa digunakan satu kali transaksi.</li>
+          <li>Tidak dapat digabung dengan promo lain.</li>
+          <li>Kode voucher wajib ditunjukkan ke kasir sebelum pembayaran.</li>
+          <li>Poin yang sudah ditukar tidak dapat dikembalikan.</li>
+        </ul>
+      </div>
+
+      <!-- CARA PENGGUNAAN -->
+      <div class="info-block-card">
+        <div class="block-subtitle mb-2">Cara Penggunaan</div>
+        <ul class="custom-bullets">
+          <li>Tukar poin lewat tombol di bawah ini.</li>
+          <li>Datang ke tempat UMKM dalam 30 hari sebelum voucher kedaluwarsa.</li>
+          <li>Tunjukkan kode ke kasir sebelum bayar, diskon langsung dipotong dari total.</li>
+        </ul>
+      </div>
+
+      <!-- BOTTOM ACTIONS -->
+      <div class="action-buttons-wrap">
+        <a href="voucher.html" class="btn-detail-back">Kembali</a>
+        <button type="button" class="btn-detail-tukar" onclick="confirmRedeem()">Tukar</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- REDEMPTION CONFIRMATION MODAL -->
+  <div class="modal fade" id="redeemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content natura-modal text-center p-4">
+        <h5 class="fw-bold text-success mb-3">Penukaran Berhasil! 🎉</h5>
+        <p class="text-light mb-2" id="modalMessage"></p>
+        <p class="small text-muted">Kode voucher telah ditambahkan ke profil Anda.</p>
+        <div class="mt-3">
+          <button type="button" class="btn btn-success px-4 rounded-pill" onclick="redirectToVouchers()">Lihat Voucher Saya</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="navbar-loader.js"></script>
+  <script>
+    // --- 1. AUTH GUARD: Run immediately on page load ---
+    function enforceAuthGuard() {
+      const username = localStorage.getItem("natura_user");
+      if (!username) {
+        // Immediately kick user out to login page
+        window.location.href = "login.html";
+        return false;
+      }
+      return true;
+    }
+
+    // Execute check instantly before rendering details
+    if (enforceAuthGuard()) {
+      let requiredPoints = 1200;
+
+      function loadVoucherDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const title = params.get('title') || 'Voucher UMKM Ibu Sri';
+        const pts = params.get('pts') || '1200';
+        const address = params.get('address') || 'Jl. Kemerdekaan 5, Jakarta Selatan';
+        const promo = params.get('promo') || 'Diskon 10% All Variant Food';
+        const icon = params.get('icon') || 'hot-pot 2.png';
+
+        requiredPoints = parseInt(pts, 10) || 1200;
+
+        document.getElementById('detailTitle').textContent = title;
+        document.getElementById('detailPoints').textContent = pts;
+        document.getElementById('detailAddress').textContent = address;
+        document.getElementById('detailPromoName').textContent = promo;
+        
+        const iconEl = document.getElementById('detailIcon');
+        iconEl.src = icon;
+        iconEl.alt = title;
+      }
+
+      function renderUserState() {
+        const username = localStorage.getItem("natura_user");
+        const authContainer = document.getElementById("authContainer");
+
+        if (username) {
+          authContainer.innerHTML = `
+            <a href="notif.html" class="bell text-decoration-none" title="Notifikasi">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="notification-badge"></span>
+            </a>
+            <div class="dropdown">
+              <div class="user-pill dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                <div class="avatar">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <span>${username.toUpperCase()}</span>
+              </div>
+              <ul class="dropdown-menu dropdown-menu-end natura-dropdown-menu" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="profile.html">Profil</a></li>
+                <li><hr class="dropdown-divider border-secondary my-1"></li>
+                <li><a class="dropdown-item logout-item" href="#" onclick="logout(event)">Keluar</a></li>
+              </ul>
+            </div>
+          `;
+        }
+      }
+
+      function confirmRedeem() {
+  const username = localStorage.getItem("natura_user");
+  if (!username) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const promo = document.getElementById('detailPromoName').textContent;
+  const pts = document.getElementById('detailPoints').textContent;
+  const voucherCode = 'XXKR' + Math.floor(1000 + Math.random() * 9000); // Generates format like XXKR27001
+  
+  // Save to user storage
+  const userVouchers = JSON.parse(localStorage.getItem(`vouchers_${username}`) || "[]");
+  userVouchers.push({
+    title: promo,
+    code: voucherCode,
+    pts: pts,
+    date: new Date().toLocaleDateString('id-ID')
+  });
+  localStorage.setItem(`vouchers_${username}`, JSON.stringify(userVouchers));
+
+  // Redirect directly to redeem.html with params
+  const redeemUrl = `redeem.html?code=${encodeURIComponent(voucherCode)}&promo=${encodeURIComponent(promo)}&pts=${encodeURIComponent(pts)}`;
+  window.location.href = redeemUrl;
+}
+
+      function redirectToVouchers() {
+        window.location.href = "voucher.html";
+      }
+
+      // --- 2. LOGOUT FUNCTION: Clears session & kicks user out ---
+      function logout(event) {
+        if (event) event.preventDefault();
+        localStorage.removeItem("natura_user");
+        window.location.href = "login.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderUserState();
+        loadVoucherDetails();
+      });
+    }
+  </script>
+</body>
+</html>

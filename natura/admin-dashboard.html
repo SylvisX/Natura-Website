@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — NATURA</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  
+  <!-- Google Fonts: Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #021a10;
+      --card-bg: rgba(6, 32, 20, 0.7);
+      --card-border: rgba(34, 197, 94, 0.35);
+      --green-glow: #22c55e;
+      --green-glow-subtle: rgba(34, 197, 94, 0.2);
+      --text-muted: #83a392;
+      --text-light: #e2ece6;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.25) 0%, transparent 75%),
+        linear-gradient(rgba(34, 197, 94, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 197, 94, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: var(--text-light);
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* --- ANIMATIONS --- */
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes growBar {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    .admin-sidebar {
+      animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .anim-header { animation: fadeInUp 0.5s ease 0.1s both; }
+    .anim-cards  { animation: fadeInUp 0.5s ease 0.2s both; }
+    .anim-middle { animation: fadeInUp 0.5s ease 0.3s both; }
+    .anim-bottom { animation: fadeInUp 0.5s ease 0.4s both; }
+
+    /* Layout Structure */
+    .admin-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styling */
+    .admin-sidebar {
+      width: 260px;
+      background: rgba(3, 20, 12, 0.85);
+      border-right: 1px solid var(--card-border);
+      padding: 2rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .brand-logo-wrap img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .brand-logo-wrap span {
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: 1.5px;
+      color: #fff;
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      padding-left: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .admin-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .admin-nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .admin-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0.75rem 1rem;
+      color: #a8c3b3;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .admin-nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .admin-nav-link.active {
+      background: rgba(34, 197, 94, 0.2);
+      color: #ffffff;
+      border: 1px solid var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+    }
+
+    /* Main Content */
+    .admin-content {
+      flex-grow: 1;
+      padding: 2.2rem 3rem;
+      overflow-y: auto;
+    }
+
+    /* Header & Admin Badge */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin: 0;
+    }
+
+    .admin-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .admin-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(8, 38, 24, 0.85);
+      border: 1px solid var(--card-border);
+      padding: 6px 18px 6px 8px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .admin-user-badge:hover {
+      background: rgba(34, 197, 94, 0.25);
+      border-color: var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .admin-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .admin-user-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.35rem 1.6rem;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--green-glow);
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--green-glow);
+      font-weight: 600;
+    }
+
+    .chart-container {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 240px;
+      padding-top: 20px;
+      gap: 12px;
+    }
+
+    .chart-bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .chart-val {
+      font-size: 0.82rem;
+      color: #a8c3b3;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .chart-bar {
+      width: 100%;
+      max-width: 48px;
+      background: linear-gradient(180deg, rgba(52, 211, 153, 0.65) 0%, rgba(16, 185, 129, 0.15) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      border-bottom: none;
+      border-radius: 8px 8px 3px 3px;
+      transform-origin: bottom;
+      animation: growBar 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+      transition: all 0.25s ease;
+    }
+
+    .chart-bar:hover {
+      background: linear-gradient(180deg, rgba(52, 211, 153, 0.85) 0%, rgba(16, 185, 129, 0.3) 100%);
+      border-color: rgba(52, 211, 153, 0.6);
+      box-shadow: 0 4px 12px rgba(52, 211, 153, 0.2);
+    }
+
+    .chart-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    /* Activity List */
+    .activity-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e2ece6;
+    }
+
+    .activity-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Table Styling */
+    .admin-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+
+    .admin-table th {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0 1rem 0.5rem 1rem;
+    }
+
+    .admin-table td {
+      background: rgba(4, 24, 15, 0.6);
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      color: #e2ece6;
+      vertical-align: middle;
+    }
+
+    .admin-table tr td:first-child {
+      border-left: 1px solid var(--card-border);
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+
+    .admin-table tr td:last-child {
+      border-right: 1px solid var(--card-border);
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    /* ID Tag Capsule */
+    .report-id-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    /* Status Badge */
+    .status-badge-pending {
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    /* Action Buttons */
+    .btn-action-reject {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #e2ece6;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action-reject:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .btn-action-approve {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid var(--green-glow);
+      color: var(--green-glow);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action-approve:hover {
+      background: var(--green-glow);
+      color: #021a10;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+    }
+
+    /* --- CUSTOM MODAL STYLING (Matching visual reference) --- */
+    .modal-backdrop.show {
+      opacity: 0.75;
+      backdrop-filter: blur(8px);
+    }
+
+    .custom-modal-content {
+      background: rgba(3, 20, 12, 0.95) !important;
+      border: 1px solid var(--card-border) !important;
+      border-radius: 24px !important;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(34, 197, 94, 0.15);
+      color: #fff;
+      position: relative;
+    }
+
+    .btn-close-custom {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      z-index: 10;
+    }
+
+    .btn-close-custom:hover {
+      color: #fff;
+    }
+
+    .modal-icon-wrap {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+    }
+
+    .modal-title-text {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #fff;
+      font-size: 1.45rem;
+    }
+
+    .modal-subtitle-text {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .btn-custom-primary {
+      background: #86efac !important;
+      color: #021a10 !important;
+      font-weight: 700 !important;
+      border-radius: 50px !important;
+      padding: 12px 24px !important;
+      border: none !important;
+      font-size: 0.95rem;
+      transition: all 0.25s ease !important;
+    }
+
+    .btn-custom-primary:hover {
+      background: #4ade80 !important;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-custom-secondary {
+      background: transparent !important;
+      color: #e2ece6 !important;
+      font-weight: 600 !important;
+      border-radius: 50px !important;
+      padding: 12px 24px !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      font-size: 0.95rem;
+      transition: all 0.25s ease !important;
+    }
+
+    .btn-custom-secondary:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="brand-logo-wrap">
+        <img src="logo.png" alt="NATURA Logo" onerror="this.src='leaf logo.png'">
+        <span>NATURA.</span>
+      </div>
+
+      <div class="nav-section-title">UTAMA</div>
+      <ul class="admin-nav">
+        <li class="admin-nav-item">
+          <a href="#" class="admin-nav-link active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="report-verif.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Verifikasi Laporan
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="admin-ranking.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Ranking
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="voucher-umkm.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            Voucher & UMKM
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="petugas-kebersihan.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Petugas Kebersihan
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-section-title">LAINNYA</div>
+      <ul class="admin-nav">
+        <li class="admin-nav-item">
+          <a href="pengaturan.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Pengaturan
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="admin-content">
+      <!-- HEADER -->
+      <div class="admin-header anim-header">
+        <div>
+          <h1>DASHBOARD</h1>
+          <p>Ringkasan aktivitas NATURA hari ini</p>
+        </div>
+        <div class="admin-user-badge" onclick="logoutAdmin()" title="Klik untuk Logout">
+          <div class="admin-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <span class="admin-user-name">ADMIN</span>
+        </div>
+      </div>
+
+      <!-- METRIC CARDS -->
+      <div class="row g-3 mb-4 anim-cards">
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Laporan Hari ini</div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-sub">Total laporan masuk</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Menunggu Verifikasi</div>
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-sub" style="opacity: 0">&nbsp;</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Disetujui Hari ini</div>
+            <div class="stat-value" id="statApproved">0</div>
+            <div class="stat-sub">Laporan terverifikasi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE SECTION: CHART & ACTIVITY -->
+      <div class="row g-3 mb-4 anim-middle">
+        <!-- BAR CHART -->
+        <div class="col-lg-8">
+          <div class="glass-card h-100">
+            <h2 class="h6 font-weight-bold m-0" style="color: #fff;">Tren Laporan Mingguan</h2>
+            <div class="stat-label">Jumlah laporan masuk 7 hari terakhir</div>
+
+            <div class="chart-container">
+              <div class="chart-bar-group">
+                <span class="chart-val">25</span>
+                <div class="chart-bar" style="height: 60%;"></div>
+                <span class="chart-label">Sen</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">29</span>
+                <div class="chart-bar" style="height: 70%;"></div>
+                <span class="chart-label">Sel</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">7</span>
+                <div class="chart-bar" style="height: 20%;"></div>
+                <span class="chart-label">Rab</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">38</span>
+                <div class="chart-bar" style="height: 95%;"></div>
+                <span class="chart-label">Kam</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">29</span>
+                <div class="chart-bar" style="height: 70%;"></div>
+                <span class="chart-label">Jum</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">33</span>
+                <div class="chart-bar" style="height: 80%;"></div>
+                <span class="chart-label">Sab</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">29</span>
+                <div class="chart-bar" style="height: 70%;"></div>
+                <span class="chart-label">Min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+        <div class="col-lg-4">
+          <div class="glass-card h-100">
+            <h2 class="h6 font-weight-bold mb-3" style="color: #fff;">Aktivitas</h2>
+
+            <div class="activity-item">
+              <div class="activity-user">
+                <div class="admin-avatar" style="width:24px; height:24px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                Admin
+              </div>
+              <span class="activity-time">Aktif</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM QUEUE TABLE -->
+      <div class="glass-card anim-bottom">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h2 class="h6 font-weight-bold m-0" style="color: #fff;">Antrean Laporan</h2>
+            <div class="stat-label">Laporan yang butuh verifikasi segera</div>
+          </div>
+          <a href="report-verif.html" class="btn btn-sm btn-outline-success border-0 text-white" style="font-size: 0.8rem;">Lihat Semua →</a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Laporan</th>
+                <th>Pelapor</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+                <th class="text-end">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminQueueBody">
+              <!-- Dynamic content from localStorage -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- CUSTOM LOGOUT MODAL -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custom-modal-content">
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Tutup">&times;</button>
+        <div class="modal-body text-center p-4 p-md-5">
+          <div class="modal-icon-wrap mb-3">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </div>
+          <h4 class="modal-title-text mb-2">Konfirmasi Keluar</h4>
+          <p class="modal-subtitle-text mb-4">Apakah Anda yakin ingin keluar dari Admin Dashboard NATURA?</p>
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-custom-primary" onclick="confirmLogout()">Keluar Sekarang</button>
+            <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">Nanti Saja</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let isLoggingOut = false;
+    let logoutModalInstance = null;
+
+    function enforceAdminLock() {
+      const role = localStorage.getItem("natura_role");
+      
+      if (role !== "admin") {
+        window.location.replace("login.html");
+        return;
+      }
+
+      window.history.pushState(null, "", window.location.href);
+
+      window.onpopstate = function () {
+        if (!isLoggingOut) {
+          window.history.pushState(null, "", window.location.href);
+        }
+      };
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      enforceAdminLock();
+      loadDashboardData();
+    });
+    window.addEventListener("pageshow", () => {
+      enforceAdminLock();
+      loadDashboardData();
+    });
+
+    function logoutAdmin() {
+      if (!logoutModalInstance) {
+        logoutModalInstance = new bootstrap.Modal(document.getElementById('logoutModal'));
+      }
+      logoutModalInstance.show();
+    }
+
+    function confirmLogout() {
+      isLoggingOut = true;
+      localStorage.removeItem("natura_user");
+      localStorage.removeItem("natura_role");
+      window.location.replace("login.html");
+    }
+
+    function loadDashboardData() {
+      const reports = JSON.parse(localStorage.getItem("natura_reports") || "[]");
+
+      const pendingReports = reports.filter(r => r.status === "Menunggu" || r.status === "Menunggu Verifikasi");
+      const approvedReports = reports.filter(r => r.status === "Disetujui");
+
+      document.getElementById("statTotal").textContent = reports.length;
+      document.getElementById("statPending").textContent = pendingReports.length;
+      document.getElementById("statApproved").textContent = approvedReports.length;
+
+      const tbody = document.getElementById("adminQueueBody");
+      if (!tbody) return;
+
+      tbody.innerHTML = "";
+
+      if (pendingReports.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center text-muted py-4">Belum ada laporan dalam antrean verifikasi.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      pendingReports.forEach(report => {
+        const displayId = report.id.startsWith("REP-") ? report.id.replace("REP-", "#") : "#" + report.id;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <span class="report-id-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              ${displayId}
+            </span>
+          </td>
+          <td>${report.user || 'Anonim'}</td>
+          <td>${report.road || '-'}</td>
+          <td><span class="status-badge-pending">Menunggu</span></td>
+          <td class="text-end">
+            <button class="btn-action-reject me-1" onclick="updateReportStatus('${report.id}', 'Ditolak')">Tolak</button>
+            <button class="btn-action-approve" onclick="updateReportStatus('${report.id}', 'Disetujui')">Setujui</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateReportStatus(reportId, newStatus) {
+      let reports = JSON.parse(localStorage.getItem("natura_reports") || "[]");
+      const index = reports.findIndex(r => r.id === reportId);
+      if (index !== -1) {
+        const report = reports[index];
+        report.status = newStatus;
+        localStorage.setItem("natura_reports", JSON.stringify(reports));
+
+        // Create User Notification
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        const existingNotifs = JSON.parse(localStorage.getItem("natura_notifs") || "[]");
+        existingNotifs.unshift({
+          id: "NOTIF-" + Date.now(),
+          category: "laporan",
+          title: newStatus === "Disetujui" ? "Laporan Disetujui" : "Laporan Ditolak",
+          desc: newStatus === "Disetujui" 
+            ? `Laporan kamu di ${report.road} telah disetujui! Kamu mendapatkan +50 poin.`
+            : `Laporan kamu di ${report.road} tidak dapat disetujui.`,
+          date: formattedDate,
+          reportId: reportId
+        });
+        localStorage.setItem("natura_notifs", JSON.stringify(existingNotifs));
+
+        // Award User Points on Approval
+        if (newStatus === "Disetujui") {
+          const currentPts = parseInt(localStorage.getItem("natura_points") || "0", 10);
+          localStorage.setItem("natura_points", (currentPts + 50).toString());
+        }
+
+        loadDashboardData();
+      }
+    }
+  </script>
+</body>
+</html>

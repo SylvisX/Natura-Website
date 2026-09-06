@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030a05">
+  <title>NATURA - Ranking</title>
+  <link rel="icon" href="leaf logo.png" type="image/png">
+
+  <!-- Bootstrap 5 & Natura Style -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #030a05;
+      background-image: 
+        linear-gradient(rgba(25, 65, 38, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 65, 38, 0.18) 1px, transparent 1px);
+      background-size: 36px 36px;
+      color: #ffffff;
+      overflow-y: auto !important;
+      font-family: 'Space Grotesk', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .user-pill {
+      cursor: pointer;
+      position: relative;
+      z-index: 1051;
+    }
+
+    .grain {
+      pointer-events: none !important;
+    }
+
+    /* NAVBAR AUTH BUTTONS */
+    .btn-login-nav {
+      background: #66ff33;
+      color: #030a05;
+      font-weight: 800;
+      padding: 8px 24px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(102, 255, 51, 0.4);
+      font-size: 14px;
+    }
+
+    .btn-login-nav:hover {
+      background: #80ff4d;
+      color: #030a05;
+      box-shadow: 0 0 25px rgba(102, 255, 51, 0.6);
+    }
+
+    .btn-register-nav {
+      color: #ffffff;
+      border: 1.5px solid rgba(102, 255, 51, 0.5);
+      font-weight: 700;
+      padding: 7px 22px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .btn-register-nav:hover {
+      color: #66ff33;
+      border-color: #66ff33;
+      box-shadow: 0 0 15px rgba(102, 255, 51, 0.25);
+    }
+
+    .ranking-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 100px;
+      padding-bottom: 60px;
+    }
+
+    /* REUSABLE GLASS CARD WITH NEON GREEN GLOW */
+    .natura-card {
+      background: rgba(6, 22, 12, 0.85);
+      border: 1.5px solid rgba(102, 255, 51, 0.45);
+      border-radius: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 18px rgba(102, 255, 51, 0.2), inset 0 0 12px rgba(102, 255, 51, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .natura-card:hover {
+      border-color: rgba(102, 255, 51, 0.8);
+      box-shadow: 0 0 25px rgba(102, 255, 51, 0.35), inset 0 0 18px rgba(102, 255, 51, 0.12);
+    }
+
+    /* HIGHLIGHT LOGGED IN USER */
+    .current-user-card {
+      border: 2px solid #66ff33 !important;
+      background: rgba(102, 255, 51, 0.12) !important;
+      box-shadow: 0 0 30px rgba(102, 255, 51, 0.45), inset 0 0 20px rgba(102, 255, 51, 0.2) !important;
+    }
+
+    .you-badge {
+      background: #66ff33;
+      color: #030a05;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 2px 10px;
+      border-radius: 100px;
+      display: inline-block;
+      vertical-align: middle;
+      text-shadow: none;
+      letter-spacing: 0.3px;
+    }
+
+    /* SECTION TITLE */
+    .rank-title {
+      font-size: 34px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 28px;
+      letter-spacing: -0.5px;
+    }
+
+    /* PODIUM TOP 3 */
+    .podium-wrapper {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .podium-card {
+      flex: 1;
+      border-radius: 28px;
+      text-align: center;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; /* Center content vertically to eliminate empty space at top */
+    }
+
+    .podium-card.rank-1 {
+      height: 275px;
+      border: 2px solid #66ff33;
+      box-shadow: 0 0 35px rgba(102, 255, 51, 0.4), inset 0 0 20px rgba(102, 255, 51, 0.15);
+      padding: 24px 14px;
+    }
+
+    .podium-card.rank-2 {
+      height: 215px;
+    }
+
+    .podium-card.rank-3 {
+      height: 195px;
+    }
+
+    .medal-icon {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+    }
+
+    /* Larger gold medal for 1st place to fill proportion naturally */
+    .podium-card.rank-1 .medal-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+    }
+
+    .user-name-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .user-name {
+      font-size: 19px; /* Increased from 17px */
+      font-weight: 800;
+      color: #ffffff;
+      word-break: break-word;
+    }
+
+    .podium-card.rank-1 .user-name {
+      font-size: 22px; /* Bigger font for 1st place */
+    }
+
+    .user-pts {
+      font-size: 17px; /* Increased from 15px */
+      font-weight: 800;
+      color: #66ff33;
+      text-shadow: 0 0 8px rgba(102, 255, 51, 0.4);
+    }
+
+    .podium-card.rank-1 .user-pts {
+      font-size: 20px; /* Bigger points font for 1st place */
+    }
+
+    .you-badge {
+      background: #66ff33;
+      color: #030a05;
+      font-size: 12px; /* Increased from 11px */
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: 100px;
+      display: inline-block;
+      vertical-align: middle;
+      text-shadow: none;
+      letter-spacing: 0.3px;
+    }
+
+    /* RANK LIST (#4 - #10) */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .list-row {
+      border-radius: 100px;
+      padding: 12px 32px; /* Compact padding keeps total height intact */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .list-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .rank-tag {
+      font-size: 24px; /* Increased from 22px */
+      font-weight: 900;
+      color: #66ff33;
+      min-width: 48px;
+      text-shadow: 0 0 10px rgba(102, 255, 51, 0.5);
+      letter-spacing: -0.5px;
+    }
+
+    .list-name {
+      font-size: 19px; /* Increased from 17px */
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .list-pts {
+      font-size: 18px; /* Increased from 16px */
+      font-weight: 800;
+      color: #66ff33;
+      text-shadow: 0 0 8px rgba(102, 255, 51, 0.35);
+    }
+
+    /* RIGHT SIDEBAR - YOUR IMPACT */
+    .impact-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding-top: 10px;
+    }
+
+    .outer-circle {
+      width: 260px;
+      height: 260px;
+      border: 1px solid rgba(102, 255, 51, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      box-shadow: 0 0 20px rgba(102, 255, 51, 0.08);
+    }
+
+    .inner-circle {
+      width: 200px;
+      height: 200px;
+      border: 2px solid #66ff33;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 52, 28, 0.8) 0%, rgba(4, 16, 9, 0.95) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 35px rgba(102, 255, 51, 0.3), inset 0 0 20px rgba(102, 255, 51, 0.18);
+    }
+
+    .leaf-img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(102, 255, 51, 0.4));
+    }
+
+    .impact-heading {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .impact-value {
+      font-size: 48px;
+      font-weight: 900;
+      color: #66ff33;
+      line-height: 1;
+      margin-bottom: 14px;
+      text-shadow: 0 0 25px rgba(102, 255, 51, 0.5);
+      text-align: center;
+    }
+
+    .impact-value span {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .impact-divider {
+      width: 160px;
+      height: 2px;
+      background: rgba(102, 255, 51, 0.4);
+      margin: 0 auto 16px;
+      box-shadow: 0 0 8px rgba(102, 255, 51, 0.4);
+    }
+
+    .impact-text {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      max-width: 290px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 991px) {
+      .impact-container { padding-top: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <div id="navbar-placeholder"></div>
+  
+  <!-- MAIN RANKING CONTENT -->
+  <main class="container ranking-container">
+    <div class="row g-5">
+      
+      <!-- LEFT SECTION: RANKINGS -->
+      <div class="col-lg-7">
+        <h1 class="rank-title">Rank This Month:</h1>
+
+        <!-- PODIUM TOP 3 -->
+        <div class="podium-wrapper">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- RANK LIST (#4 - #10) -->
+        <div class="rank-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- RIGHT SECTION: YOUR IMPACT -->
+      <div class="col-lg-5">
+        <div class="impact-container">
+          <div class="outer-circle">
+            <div class="inner-circle">
+              <img src="leaf logo.png" alt="Leaf" class="leaf-img">
+            </div>
+          </div>
+
+          <div class="impact-heading">Your Impact</div>
+          <div class="impact-value" id="impactValueDisplay">0 <span>pts</span></div>
+          <div class="impact-divider"></div>
+          <p class="impact-text" id="impactTextDisplay">Memuat data...</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="navbar-loader.js"></script>
+  <script>
+  function sanitizeLocalStorage() {
+    localStorage.removeItem("natura_rankings");
+
+    const activeUser = localStorage.getItem("natura_user");
+    if (activeUser) {
+      const pointsKeys = ["natura_user_pts", `natura_user_points_${activeUser}`];
+      pointsKeys.forEach(key => {
+        const val = localStorage.getItem(key);
+        if (val === "150000" || val === "150,000" || val === "1500000") {
+          localStorage.removeItem(key);
+        }
+      });
+    }
+  }
+
+  function updateNavbarUser() {
+    const activeUser = localStorage.getItem("natura_user");
+
+    const navUsername = document.getElementById("navUsername");
+    if (navUsername && activeUser) navUsername.textContent = activeUser.toUpperCase();
+    
+    const userNameDisplay = document.getElementById("userNameDisplay");
+    if (userNameDisplay && activeUser) userNameDisplay.textContent = activeUser;
+
+    const authButtons = document.getElementById("authButtons");
+    const userProfile = document.getElementById("userProfile");
+
+    if (activeUser) {
+      if (authButtons) { 
+        authButtons.classList.add("d-none"); 
+        authButtons.classList.remove("d-flex"); 
+      }
+      if (userProfile) { 
+        userProfile.classList.remove("d-none"); 
+        userProfile.classList.add("d-flex"); 
+      }
+    } else {
+      if (authButtons) { 
+        authButtons.classList.remove("d-none"); 
+        authButtons.classList.add("d-flex"); 
+      }
+      if (userProfile) { 
+        userProfile.classList.add("d-none"); 
+        userProfile.classList.remove("d-flex"); 
+      }
+    }
+  }
+
+  document.addEventListener("click", function (e) {
+    const logoutBtn = e.target.closest("#logoutBtn") || e.target.closest(".btn-logout");
+    if (logoutBtn) {
+      e.preventDefault();
+      localStorage.removeItem("natura_user");
+      localStorage.removeItem("natura_user_pts");
+      updateNavbarUser();
+      loadAndRenderLeaderboard();
+    }
+  });
+
+  const navPlaceholder = document.getElementById("navbar-placeholder");
+  if (navPlaceholder) {
+    const observer = new MutationObserver((mutations, obs) => {
+      updateNavbarUser();
+      obs.disconnect();
+    });
+    observer.observe(navPlaceholder, { childList: true });
+  }
+
+  document.addEventListener("navbarLoaded", updateNavbarUser);
+
+  function getExactUserPts(username) {
+    if (!username) return 0;
+
+    const userKeys = [
+      `natura_user_points_${username}`,
+      `natura_user_pts_${username}`
+    ];
+
+    for (const key of userKeys) {
+      const val = localStorage.getItem(key);
+      if (val !== null && val !== "") {
+        const parsed = parseInt(String(val).replace(/,/g, ''), 10);
+        if (!isNaN(parsed)) {
+          return parsed;
+        }
+      }
+    }
+
+    // Default fallback for rifzu if key not created yet
+    if (username.toLowerCase() === "rifzu") return 250;
+
+    return 0;
+  }
+
+  function getAllUsers() {
+    const userMap = new Map();
+
+    // Default user rifzu with 250 pts
+    userMap.set("rifzu", getExactUserPts("rifzu"));
+
+    // Scan localStorage for all stored users
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith("natura_user_points_")) {
+        const uname = key.replace("natura_user_points_", "");
+        if (uname) userMap.set(uname, getExactUserPts(uname));
+      } else if (key.startsWith("natura_user_pts_")) {
+        const uname = key.replace("natura_user_pts_", "");
+        if (uname) userMap.set(uname, getExactUserPts(uname));
+      }
+    }
+
+    // Include currently logged in user
+    const currentUsername = localStorage.getItem("natura_user");
+    if (currentUsername) {
+      userMap.set(currentUsername, getExactUserPts(currentUsername));
+    }
+
+    // Convert to array and filter out users with 0 points
+    const rankings = [];
+    userMap.forEach((pts, name) => {
+      if (pts > 0) {
+        rankings.push({ name, pts });
+      }
+    });
+
+    // Sort descending by points
+    rankings.sort((a, b) => b.pts - a.pts);
+
+    return rankings;
+  }
+
+  function loadAndRenderLeaderboard() {
+    sanitizeLocalStorage();
+
+    const currentUsername = localStorage.getItem("natura_user");
+    const currentPts = currentUsername ? getExactUserPts(currentUsername) : 0;
+
+    const rankings = getAllUsers();
+
+    renderLeaderboardUI(rankings, currentUsername);
+    renderImpactUI(rankings, currentUsername, currentPts);
+  }
+
+  function renderLeaderboardUI(rankings, currentUsername) {
+    const podiumWrap = document.querySelector(".podium-wrapper");
+    const rankList = document.querySelector(".rank-list");
+
+    const p1 = rankings[0] || null;
+    const p2 = rankings[1] || null;
+    const p3 = rankings[2] || null; // Fixed from rankings[3]
+
+    const isUserP1 = p1 && currentUsername && p1.name.toLowerCase() === currentUsername.toLowerCase();
+    const isUserP2 = p2 && currentUsername && p2.name.toLowerCase() === currentUsername.toLowerCase();
+    const isUserP3 = p3 && currentUsername && p3.name.toLowerCase() === currentUsername.toLowerCase();
+
+    const formatName = (u) => u ? escapeHtml(u.name) : '-';
+    const formatPts = (u) => u ? `${u.pts.toLocaleString('id-ID')} pts` : '-';
+
+    if (podiumWrap) {
+      podiumWrap.innerHTML = `
+        <!-- Rank 2 -->
+        <div class="podium-card natura-card rank-2 ${isUserP2 ? 'current-user-card' : ''}">
+          <img src="silver medal.png" alt="Silver Medal" class="medal-icon" onerror="this.src='leaf logo.png'">
+          <div class="user-name-container">
+            <span class="user-name">${formatName(p2)}</span>
+            ${isUserP2 ? '<span class="you-badge">Kamu</span>' : ''}
+          </div>
+          <div class="user-pts">${formatPts(p2)}</div>
+        </div>
+
+        <!-- Rank 1 -->
+        <div class="podium-card natura-card rank-1 ${isUserP1 ? 'current-user-card' : ''}">
+          <img src="gold medal.png" alt="Gold Medal" class="medal-icon" onerror="this.src='leaf logo.png'">
+          <div class="user-name-container">
+            <span class="user-name">${formatName(p1)}</span>
+            ${isUserP1 ? '<span class="you-badge">Kamu</span>' : ''}
+          </div>
+          <div class="user-pts">${formatPts(p1)}</div>
+        </div>
+
+        <!-- Rank 3 -->
+        <div class="podium-card natura-card rank-3 ${isUserP3 ? 'current-user-card' : ''}">
+          <img src="bronze medal.png" alt="Bronze Medal" class="medal-icon" onerror="this.src='leaf logo.png'">
+          <div class="user-name-container">
+            <span class="user-name">${formatName(p3)}</span>
+            ${isUserP3 ? '<span class="you-badge">Kamu</span>' : ''}
+          </div>
+          <div class="user-pts">${formatPts(p3)}</div>
+        </div>
+      `;
+    }
+
+    if (rankList) {
+      let listHtml = "";
+      for (let i = 0; i < 7; i++) {
+        const rankNum = i + 4;
+        const u = rankings[i + 3] || null;
+        const isUser = u && currentUsername && u.name.toLowerCase() === currentUsername.toLowerCase();
+
+        listHtml += `
+          <div class="list-row natura-card ${isUser ? 'current-user-card' : ''}">
+            <div class="list-left">
+              <span class="rank-tag">#${rankNum}</span>
+              <span class="list-name">${formatName(u)} ${isUser ? '<span class="you-badge">Kamu</span>' : ''}</span>
+            </div>
+            <div class="list-pts">${formatPts(u)}</div>
+          </div>
+        `;
+      }
+      rankList.innerHTML = listHtml;
+    }
+  }
+
+  function renderImpactUI(rankings, currentUsername, userPts) {
+    const impactValueDisplay = document.getElementById("impactValueDisplay");
+    const impactTextDisplay = document.getElementById("impactTextDisplay");
+
+    if (impactValueDisplay) {
+      impactValueDisplay.innerHTML = `${(userPts || 0).toLocaleString('id-ID')} <span>pts</span>`;
+    }
+
+    if (impactTextDisplay) {
+      const userRankIndex = rankings.findIndex(r => r.name.toLowerCase() === (currentUsername || '').toLowerCase());
+
+      if (currentUsername && userPts > 0 && userRankIndex !== -1) {
+        impactTextDisplay.innerHTML = `Selamat datang kembali, <strong>${escapeHtml(currentUsername)}</strong>!<br>Kamu berada di <strong>Peringkat #${userRankIndex + 1}</strong>.`;
+      } else if (currentUsername) {
+        impactTextDisplay.innerHTML = `Selamat datang kembali, <strong>${escapeHtml(currentUsername)}</strong>!<br>Kumpulkan poin dengan mengirim laporan lingkungan untuk masuk ke papan peringkat.`;
+      } else {
+        impactTextDisplay.innerHTML = `Masuk untuk melihat total poin dampak lingkungan dan posisi peringkat kamu.`;
+      }
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    updateNavbarUser();
+    loadAndRenderLeaderboard();
+  });
+</script>
+</body>
+</html>

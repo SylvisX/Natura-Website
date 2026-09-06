@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#061d12">
+<link rel="icon" href="logo.png" type="image/png">
+
+<!-- Bootstrap 5 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<title>Masuk — Natura</title>
+<style>
+  /* Custom styles for password field wrapper & eye toggle */
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-wrapper input {
+    padding-right: 44px !important;
+  }
+
+  .password-toggle-btn {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    z-index: 5;
+  }
+
+  .password-toggle-btn:hover {
+    color: #ffffff;
+  }
+
+  /* --- Custom Error Modal Styles --- */
+  .custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+
+  .custom-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .custom-modal-card {
+    background: #081d11;
+    border: 1px solid rgba(140, 255, 56, 0.15);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 400px;
+    padding: 32px 24px 28px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    transform: scale(0.92);
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .custom-modal-overlay.active .custom-modal-card {
+    transform: scale(1);
+  }
+
+  .custom-modal-close {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .custom-modal-close:hover {
+    color: #ffffff;
+  }
+
+  .custom-modal-icon-ring {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 1px solid rgba(140, 255, 56, 0.4);
+    background: rgba(140, 255, 56, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 0 20px rgba(140, 255, 56, 0.12);
+  }
+
+  .custom-modal-title {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .custom-modal-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+  .custom-modal-btn-primary {
+    width: 100%;
+    background: #8cff38;
+    color: #061d12;
+    border: none;
+    border-radius: 50px;
+    padding: 13px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+
+  .custom-modal-btn-primary:hover {
+    background: #a3ff59;
+    transform: translateY(-1px);
+  }
+</style>
+</head>
+<body class="auth-page">
+  <div class="grain"></div>
+  
+  <img src="Vector 39.png" alt="" class="bg-wave-line">
+
+  <main class="auth-page-wrap">
+    <div class="auth-card-split fade-scale">
+      <div class="auth-left">
+        <div class="auth-brand">
+          <div class="auth-logo-ring">
+            <img src="logo.png" alt="Natura Logo">
+          </div>
+          <span class="auth-brand-title">NATURA.</span>
+        </div>
+
+        <h1 class="auth-headline">
+          Tumbuh lebih <span class="highlight">rimbun</span>, setiap kali masuk.
+        </h1>
+
+        <p class="auth-description">
+          satu akun untuk merawat semua ruang hijaumu - terhubung, terjaga, dan selalu tumbuh.
+        </p>
+      </div>
+
+      <div class="auth-right">
+        <div class="auth-tabs-toggle">
+          <a href="login.html" class="auth-tab-btn active">Login</a>
+          <a href="register.html" class="auth-tab-btn">Register</a>
+        </div>
+
+        <div class="auth-form-head">
+          <h2>Welcome Back</h2>
+          <p>Masuk untuk lanjut melapor dan cek poin kamu</p>
+        </div>
+
+        <form id="loginForm">
+          <div class="auth-field">
+            <label for="loginEmail">Email / Username</label>
+            <input type="text" id="loginEmail" name="email" required autocomplete="username" placeholder="Username or Email">
+          </div>
+
+          <div class="auth-field">
+            <label for="loginPassword">Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
+              <button type="button" id="togglePassword" class="password-toggle-btn" aria-label="Toggle password visibility">
+                <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-remember">
+            <label class="auth-checkbox">
+              <input type="checkbox" name="remember">
+              <span>Ingat saya</span>
+            </label>
+          </div>
+
+          <button type="submit" class="auth-btn-submit">Masuk</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Custom Error Modal -->
+  <div id="customErrorModal" class="custom-modal-overlay">
+    <div class="custom-modal-card">
+      <button type="button" class="custom-modal-close" id="customModalCloseX">&times;</button>
+      <div class="custom-modal-icon-ring">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8cff38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h3 id="customModalTitle" class="custom-modal-title">Gagal Masuk</h3>
+      <p id="customModalMessage" class="custom-modal-text">Akun tidak ditemukan atau password salah!</p>
+      <button type="button" class="custom-modal-btn-primary" id="customModalBtnPrimary">Coba Lagi</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // 1. Seed default petugas account if not present
+    const registeredUsers = JSON.parse(localStorage.getItem('natura_registered_accounts') || "[]");
+    if (!registeredUsers.some(u => u.email === "petugas@gmail.com" || u.username === "petugas")) {
+      registeredUsers.push({
+        username: "petugas",
+        email: "petugas@gmail.com",
+        password: "petugas123",
+        role: "petugas"
+      });
+      localStorage.setItem('natura_registered_accounts', JSON.stringify(registeredUsers));
+    }
+
+    // 2. Redirect active session based on role
+    const existingUser = localStorage.getItem("natura_user");
+    const role = localStorage.getItem("natura_role");
+    if (existingUser) {
+      if (role === "admin") {
+        window.location.replace("admin-dashboard.html");
+      } else if (role === "petugas") {
+        window.location.replace("petugas-dashboard.html");
+      } else {
+        window.location.replace("index.html");
+      }
+    }
+  });
+
+  // Toggle Password Visibility
+  const togglePasswordBtn = document.getElementById('togglePassword');
+  const passwordInput = document.getElementById('loginPassword');
+  const eyeIcon = document.getElementById('eyeIcon');
+
+  togglePasswordBtn.addEventListener('click', function () {
+    const isPassword = passwordInput.getAttribute('type') === 'password';
+    passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+
+    if (isPassword) {
+      eyeIcon.innerHTML = `
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+      `;
+    } else {
+      eyeIcon.innerHTML = `
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      `;
+    }
+  });
+
+  // Custom Modal Helper Functions
+  const modalOverlay = document.getElementById('customErrorModal');
+  const modalTitle = document.getElementById('customModalTitle');
+  const modalMessage = document.getElementById('customModalMessage');
+  const modalCloseX = document.getElementById('customModalCloseX');
+  const modalBtnPrimary = document.getElementById('customModalBtnPrimary');
+
+  function showCustomError(title, message) {
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    modalOverlay.classList.add('active');
+  }
+
+  function hideCustomError() {
+    modalOverlay.classList.remove('active');
+  }
+
+  modalCloseX.addEventListener('click', hideCustomError);
+  modalBtnPrimary.addEventListener('click', hideCustomError);
+  modalOverlay.addEventListener('click', function(e) {
+    if (e.target === modalOverlay) hideCustomError();
+  });
+
+  // Form Submit Handler
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    
+    const userInput = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const passwordInputVal = passwordInput.value.trim();
+    
+    if (!userInput || !passwordInputVal) {
+      showCustomError("Informasi Tidak Lengkap", "Harap isi semua kolom terlebih dahulu!");
+      return;
+    }
+
+    // --- ADMIN LOGIN ---
+    if ((userInput === 'admin' || userInput === 'admin@gmail.com') && passwordInputVal === 'admin123') {
+      localStorage.setItem('natura_user', 'Admin');
+      localStorage.setItem('natura_role', 'admin');
+      window.location.replace('admin-dashboard.html');
+      return;
+    }
+
+    // --- PETUGAS LOGIN ---
+    if ((userInput === 'petugas' || userInput === 'petugas@gmail.com') && passwordInputVal === 'petugas123') {
+      localStorage.setItem('natura_user', 'petugas');
+      localStorage.setItem('natura_role', 'petugas');
+      window.location.replace('petugas-dashboard.html');
+      return;
+    }
+
+    // --- REGISTERED USERS LOGIN ---
+    const registeredUsers = JSON.parse(localStorage.getItem('natura_registered_accounts') || "[]");
+    
+    const userAcc = registeredUsers.find(
+      user => (
+        (user.email && user.email.toLowerCase() === userInput) ||
+        (user.username && user.username.toLowerCase() === userInput)
+      ) && user.password === passwordInputVal
+    );
+    
+    if (!userAcc) {
+      showCustomError("Gagal Masuk", "Username/Email atau password yang Anda masukkan salah!");
+      return;
+    }
+    
+    const userRole = userAcc.role || 'user';
+    localStorage.setItem('natura_user', userAcc.username);
+    localStorage.setItem('natura_role', userRole);
+
+    if (userRole === 'petugas') {
+      window.location.replace('petugas-dashboard.html');
+    } else if (userRole === 'admin') {
+      window.location.replace('admin-dashboard.html');
+    } else {
+      window.location.replace('index.html');
+    }
+  });
+</script>
+</body>
+</html>
