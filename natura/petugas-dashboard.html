@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petugas Dashboard — NATURA</title>
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #021a10;
+      --card-bg: rgba(6, 32, 20, 0.7);
+      --card-border: rgba(34, 197, 94, 0.35);
+      --green-glow: #22c55e;
+      --green-glow-subtle: rgba(34, 197, 94, 0.2);
+      --text-muted: #83a392;
+      --text-light: #e2ece6;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.25) 0%, transparent 75%),
+        linear-gradient(rgba(34, 197, 94, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 197, 94, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: var(--text-light);
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes growBar {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    @keyframes floatLeaf {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(3deg); }
+    }
+
+    .admin-sidebar {
+      animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .anim-header { animation: fadeInUp 0.5s ease 0.1s both; }
+    .anim-cards  { animation: fadeInUp 0.5s ease 0.2s both; }
+    .anim-middle { animation: fadeInUp 0.5s ease 0.3s both; }
+    .anim-bottom { animation: fadeInUp 0.5s ease 0.4s both; }
+
+    .admin-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .admin-sidebar {
+      width: 260px;
+      background: rgba(3, 20, 12, 0.85);
+      border-right: 1px solid var(--card-border);
+      padding: 2rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .brand-logo-wrap img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .brand-logo-wrap span {
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: 1.5px;
+      color: #fff;
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      padding-left: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .admin-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .admin-nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .admin-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0.75rem 1rem;
+      color: #a8c3b3;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .admin-nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .admin-nav-link.active {
+      background: rgba(34, 197, 94, 0.2);
+      color: #ffffff;
+      border: 1px solid var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+    }
+
+    .admin-content {
+      flex-grow: 1;
+      padding: 2.2rem 3rem;
+      overflow-y: auto;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin: 0;
+    }
+
+    .admin-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .admin-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(8, 38, 24, 0.85);
+      border: 1px solid var(--card-border);
+      padding: 6px 18px 6px 8px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .admin-user-badge:hover {
+      background: rgba(34, 197, 94, 0.25);
+      border-color: var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .admin-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .admin-user-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.35rem 1.6rem;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--green-glow);
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--green-glow);
+      font-weight: 600;
+    }
+
+    .chart-container {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 240px;
+      padding-top: 20px;
+      gap: 12px;
+    }
+
+    .chart-bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .chart-val {
+      font-size: 0.82rem;
+      color: #a8c3b3;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .chart-bar {
+      width: 100%;
+      max-width: 48px;
+      background: linear-gradient(180deg, rgba(52, 211, 153, 0.65) 0%, rgba(16, 185, 129, 0.15) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      border-bottom: none;
+      border-radius: 8px 8px 3px 3px;
+      transform-origin: bottom;
+      animation: growBar 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+      transition: all 0.25s ease;
+    }
+
+    .chart-bar:hover {
+      background: linear-gradient(180deg, rgba(52, 211, 153, 0.85) 0%, rgba(16, 185, 129, 0.3) 100%);
+      border-color: rgba(52, 211, 153, 0.6);
+      box-shadow: 0 4px 12px rgba(52, 211, 153, 0.2);
+    }
+
+    .chart-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .standalone-leaf-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 350px;
+      padding: 0.5rem;
+    }
+
+    .big-leaf-img {
+      width: 420px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 50px rgba(34, 197, 94, 0.55));
+      animation: floatLeaf 4s ease-in-out infinite;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .big-leaf-img:hover {
+      filter: drop-shadow(0 0 70px rgba(34, 197, 94, 0.85));
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+
+    .admin-table th {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0 1rem 0.5rem 1rem;
+    }
+
+    .admin-table td {
+      background: rgba(4, 24, 15, 0.6);
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      color: #e2ece6;
+      vertical-align: middle;
+    }
+
+    .admin-table tr td:first-child {
+      border-left: 1px solid var(--card-border);
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+
+    .admin-table tr td:last-child {
+      border-right: 1px solid var(--card-border);
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    .report-id-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .status-badge-pending {
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .btn-action-view {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #e2ece6;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-action-view:hover {
+      border-color: #fff;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-action-accept {
+      background: var(--green-glow);
+      border: 1px solid var(--green-glow);
+      color: #021a10;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action-accept:hover {
+      background: #34d399;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-wrapper">
+
+    <aside class="admin-sidebar">
+      <div class="brand-logo-wrap">
+        <img src="giant leaf.png" alt="NATURA Logo" onerror="this.src='logo.png'">
+        <span>NATURA.</span>
+      </div>
+
+      <div class="nav-section-title">UTAMA</div>
+      <ul class="admin-nav">
+        <li class="admin-nav-item">
+          <a href="#" class="admin-nav-link active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="tugas-saya.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Tugas Saya
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="riwayat-petugas.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            Riwayat Petugas
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="admin-content">
+
+      <div class="admin-header anim-header">
+        <div>
+          <h1>DASHBOARD</h1>
+          <p>Ringkasan tugas hari ini, Minggu 6 September 2026</p>
+        </div>
+        <div class="admin-user-badge" onclick="logoutPetugas()" title="Klik untuk Logout">
+          <div class="admin-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <span class="admin-user-name">PETUGAS</span>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4 anim-cards">
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Tugas Selesai Hari ini</div>
+            <div class="stat-value" id="statSelesai">4</div>
+            <div class="stat-sub">+1 dari kemarin</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Sedang Dikerjakan</div>
+            <div class="stat-value" id="statProses">2</div>
+            <div class="stat-sub" style="opacity: 0">&nbsp;</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Selesai Bulan ini</div>
+            <div class="stat-value" id="statBulanIni">25</div>
+            <div class="stat-sub">+7 dari bulan kemarin</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4 anim-middle align-items-center">
+
+        <div class="col-lg-8">
+          <div class="glass-card h-100">
+            <h2 class="h6 font-weight-bold m-0" style="color: #fff;">Tren Laporan Mingguan</h2>
+            <div class="stat-label">Jumlah titik selesai 7 hari terakhir</div>
+
+            <div class="chart-container">
+              <div class="chart-bar-group">
+                <span class="chart-val">4</span>
+                <div class="chart-bar" style="height: 45%;"></div>
+                <span class="chart-label">Sen</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">5</span>
+                <div class="chart-bar" style="height: 55%;"></div>
+                <span class="chart-label">Sel</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">2</span>
+                <div class="chart-bar" style="height: 25%;"></div>
+                <span class="chart-label">Rab</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">8</span>
+                <div class="chart-bar" style="height: 90%;"></div>
+                <span class="chart-label">Kam</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">6</span>
+                <div class="chart-bar" style="height: 65%;"></div>
+                <span class="chart-label">Jum</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">7</span>
+                <div class="chart-bar" style="height: 75%;"></div>
+                <span class="chart-label">Sab</span>
+              </div>
+              <div class="chart-bar-group">
+                <span class="chart-val">6</span>
+                <div class="chart-bar" style="height: 65%;"></div>
+                <span class="chart-label">Min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 d-flex justify-content-center align-items-center">
+          <div class="standalone-leaf-wrapper">
+            <img src="giant leaf.png" alt="Big Leaf" class="big-leaf-img">
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card anim-bottom">
+        <div class="mb-3">
+          <h2 class="h6 font-weight-bold m-0" style="color: #fff;">Tugas Menunggu Diterima</h2>
+          <div class="stat-label">Ditugaskan admin, belum kamu terima</div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Laporan</th>
+                <th>Pelapor</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+                <th class="text-end">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="petugasQueueBody">
+              <tr>
+                <td>
+                  <span class="report-id-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    #2756
+                  </span>
+                </td>
+                <td class="fw-bold">Artur Simanjuntak</td>
+                <td>Jl. Merpati No. 12</td>
+                <td><span class="status-badge-pending">Menunggu</span></td>
+                <td class="text-end">
+                  <button class="btn-action-view me-1" onclick="viewTask('#2756')">Lihat</button>
+                  <button class="btn-action-accept" onclick="acceptTask('#2756')">Terima</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="report-id-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    #2756
+                  </span>
+                </td>
+                <td class="fw-bold">Badru Muhammad</td>
+                <td>Jl. Merpati No. 12</td>
+                <td><span class="status-badge-pending">Menunggu</span></td>
+                <td class="text-end">
+                  <button class="btn-action-view me-1" onclick="viewTask('#2756')">Lihat</button>
+                  <button class="btn-action-accept" onclick="acceptTask('#2756')">Terima</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+    history.pushState(null, null, location.href);
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const role = localStorage.getItem("natura_role");
+    if (role !== "petugas") {
+      window.location.replace("login.html");
+    }
+  });
+
+  function logoutPetugas() {
+    if (confirm("Apakah Anda yakin ingin keluar dari Petugas Dashboard?")) {
+      localStorage.removeItem("natura_user");
+      localStorage.removeItem("natura_role");
+      window.location.replace("login.html");
+    }
+  }
+
+  function viewTask(taskId) {
+    alert("Melihat detail tugas " + taskId);
+  }
+
+  function acceptTask(taskId) {
+    alert("Tugas " + taskId + " berhasil diterima!");
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Petugas — NATURA</title>
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #021a10;
+      --card-bg: rgba(6, 32, 20, 0.7);
+      --card-border: rgba(34, 197, 94, 0.3);
+      --green-glow: #22c55e;
+      --text-muted: #83a392;
+      --text-light: #e2ece6;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.22) 0%, transparent 75%),
+        linear-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+      color: var(--text-light);
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-sidebar { animation: slideInLeft 0.5s ease forwards; }
+    .anim-header { animation: fadeInUp 0.4s ease 0.1s both; }
+    .anim-cards  { animation: fadeInUp 0.4s ease 0.2s both; }
+    .anim-table  { animation: fadeInUp 0.4s ease 0.3s both; }
+
+    .admin-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .admin-sidebar {
+      width: 260px;
+      background: rgba(3, 20, 12, 0.85);
+      border-right: 1px solid var(--card-border);
+      padding: 2rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .brand-logo-wrap img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .brand-logo-wrap span {
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: 1.5px;
+      color: #fff;
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      padding-left: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .admin-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .admin-nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .admin-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0.75rem 1rem;
+      color: #a8c3b3;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .admin-nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .admin-nav-link.active {
+      background: rgba(34, 197, 94, 0.2);
+      color: #ffffff;
+      border: 1px solid var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+    }
+
+    .admin-content {
+      flex-grow: 1;
+      padding: 2.2rem 3rem;
+      overflow-y: auto;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin: 0;
+    }
+
+    .admin-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .admin-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(8, 38, 24, 0.85);
+      border: 1px solid var(--card-border);
+      padding: 6px 18px 6px 8px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .admin-user-badge:hover {
+      background: rgba(34, 197, 94, 0.25);
+      border-color: var(--green-glow);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .admin-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .admin-user-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.2rem 1.5rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--green-glow);
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .search-box-wrap {
+      position: relative;
+      max-width: 260px;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(6, 32, 20, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 12px 8px 38px;
+      color: #fff;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.25s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--green-glow);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .table-container-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      backdrop-filter: blur(14px);
+    }
+
+    .table-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 1.25rem;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(34, 197, 94, 0.15);
+      text-align: left;
+    }
+
+    .history-table td {
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #e2ece6;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .report-id-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #fff;
+    }
+
+    .badge-status-finish {
+      display: inline-block;
+      border: 1px solid var(--green-glow);
+      color: var(--green-glow);
+      background: rgba(34, 197, 94, 0.12);
+      padding: 3px 18px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-wrapper">
+
+    <aside class="admin-sidebar">
+      <div class="brand-logo-wrap">
+        <img src="giant leaf_2.png" alt="NATURA Logo" onerror="this.src='logo.png'">
+        <span>NATURA.</span>
+      </div>
+
+      <div class="nav-section-title">UTAMA</div>
+      <ul class="admin-nav">
+        <li class="admin-nav-item">
+          <a href="petugas-dashboard.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="tugas-saya.html" class="admin-nav-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Tugas Saya
+          </a>
+        </li>
+        <li class="admin-nav-item">
+          <a href="riwayat-petugas.html" class="admin-nav-link active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            Riwayat Petugas
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="admin-content">
+
+      <div class="admin-header anim-header">
+        <div>
+          <h1>RIWAYAT</h1>
+          <p>Seluruh aktivitas saya</p>
+        </div>
+        <div class="admin-user-badge" onclick="logoutPetugas()" title="Klik untuk Logout">
+          <div class="admin-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <span class="admin-user-name">PETUGAS</span>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4 anim-cards">
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Total Selesai</div>
+            <div class="stat-value">78</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Bulan ini</div>
+            <div class="stat-value">14</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="stat-label">Hari ini</div>
+            <div class="stat-value">3</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-box-wrap anim-cards">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Cari riwayat..." onkeyup="filterHistory()">
+      </div>
+
+      <div class="table-container-card anim-table">
+        <div class="table-title">Seluruh Riwayat Tugas</div>
+
+        <div class="table-responsive">
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr>
+                <th>Laporan</th>
+                <th>Lokasi</th>
+                <th>Waktu Selesai</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="report-id-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    #2756
+                  </span>
+                </td>
+                <td class="fw-bold">Jl. Merpati No. 12</td>
+                <td>10 Agus 2026, 09.57</td>
+                <td><span class="badge-status-finish">Finish</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="report-id-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    #2756
+                  </span>
+                </td>
+                <td class="fw-bold">Jl. Merpati No. 12</td>
+                <td>10 Agus 2026, 09.57</td>
+                <td><span class="badge-status-finish">Finish</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="report-id-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    #2756
+                  </span>
+                </td>
+                <td class="fw-bold">Jl. Merpati No. 12</td>
+                <td>10 Agus 2026, 09.57</td>
+                <td><span class="badge-status-finish">Finish</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+    history.pushState(null, null, location.href);
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const role = localStorage.getItem("natura_role");
+    if (role !== "petugas") {
+      window.location.replace("login.html");
+    }
+  });
+
+  function logoutPetugas() {
+    if (confirm("Apakah Anda yakin ingin keluar dari Petugas Dashboard?")) {
+      localStorage.removeItem("natura_user");
+      localStorage.removeItem("natura_role");
+      window.location.replace("login.html");
+    }
+  }
+
+  function filterHistory() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const rows = document.querySelectorAll("#historyTable tbody tr");
+
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(input) ? "" : "none";
+    });
+  }
+</script>
+</body>
+</html>

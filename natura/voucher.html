@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050f08">
+<link rel="icon" href="logo.png" type="image/png">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Voucher — Natura</title>
+
+<style>
+  body {
+    background-color: #040e07;
+    background-image: 
+      linear-gradient(rgba(30, 70, 45, 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30, 70, 45, 0.22) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: #ffffff;
+    overflow-y: auto !important;
+    font-family: 'Space Grotesk', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .user-pill {
+    cursor: pointer;
+    position: relative;
+    z-index: 1051;
+  }
+
+  .grain {
+    pointer-events: none !important;
+  }
+
+  .natura-card {
+    background: rgba(8, 28, 16, 0.7);
+    border: 1px solid rgba(166, 255, 77, 0.35);
+    border-radius: 20px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 0 20px rgba(166, 255, 77, 0.12), inset 0 0 15px rgba(166, 255, 77, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .natura-card:hover {
+    border-color: rgba(166, 255, 77, 0.6);
+    box-shadow: 0 0 25px rgba(166, 255, 77, 0.25), inset 0 0 20px rgba(166, 255, 77, 0.1);
+  }
+
+  .voucher-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 110px;
+    padding-bottom: 60px;
+  }
+
+  .status-card {
+    padding: 24px 32px;
+    margin-bottom: 36px;
+  }
+
+  .status-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+  }
+
+  .status-pts {
+    font-size: 38px;
+    font-weight: 900;
+    color: #a6ff4d;
+    line-height: 1;
+    text-shadow: 0 0 12px rgba(166, 255, 77, 0.4);
+  }
+
+  .status-pts span {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .level-title {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 6px;
+  }
+
+  .custom-progress-track {
+    background: rgba(255, 255, 255, 0.12);
+    height: 10px;
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .custom-progress-bar {
+    background: #a6ff4d;
+    height: 100%;
+    border-radius: 100px;
+    box-shadow: 0 0 10px rgba(166, 255, 77, 0.8);
+  }
+
+  .level-hint {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+  }
+
+  .member-badge {
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    text-align: right;
+  }
+
+  .filter-wrapper {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .filter-btn {
+    padding: 10px 36px;
+    border-radius: 100px;
+    font-size: 20px;
+    font-weight: 700;
+    background: transparent;
+    color: #ffffff;
+    border: 1.5px solid rgba(166, 255, 77, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .filter-btn.active {
+    background: linear-gradient(135deg, #3d8b4c 0%, #235c30 100%);
+    border-color: #a6ff4d;
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(166, 255, 77, 0.3);
+  }
+
+  .voucher-card {
+    padding: 18px 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .voucher-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .voucher-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .voucher-icon-box img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .voucher-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 2px 0;
+    line-height: 1.2;
+  }
+
+  .voucher-desc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+  }
+
+  .voucher-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .voucher-cost {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .voucher-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .btn-tukar {
+    background: transparent;
+    border: 1.5px solid #ffffff;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 22px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-tukar:hover:not(:disabled) {
+    background: #a6ff4d;
+    border-color: #a6ff4d;
+    color: #040e07;
+    box-shadow: 0 0 12px rgba(166, 255, 77, 0.4);
+  }
+
+  .btn-tukar:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.5);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .stock-tag {
+    font-size: 11px;
+    color: #ffcc00;
+    font-weight: 600;
+  }
+
+  .natura-dropdown-menu {
+    background-color: #06130b !important;
+    border: 1px solid rgba(52, 98, 63, 0.8) !important;
+    border-radius: 14px !important;
+    padding: 6px 0 !important;
+    min-width: 130px !important;
+  }
+
+  .natura-dropdown-menu .dropdown-item {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 8px 16px;
+  }
+
+  .natura-dropdown-menu .dropdown-item.logout-item {
+    color: #ff6b6b !important;
+  }
+</style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <div id="navbar-placeholder"></div>
+
+  <main class="container voucher-container">
+
+    <div class="natura-card status-card">
+      <div class="row align-items-center g-3">
+        <div class="col-md-3 col-12">
+          <div class="status-label">Poin Kamu</div>
+          <div class="status-pts" id="userPointsDisplay">0 <span>pts</span></div>
+        </div>
+
+        <div class="col-md-6 col-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="level-title">Level 1 <span class="text-white-50" id="levelPts">(0/1000 pts)</span></span>
+          </div>
+          <div class="custom-progress-track">
+            <div class="custom-progress-bar" id="progressBar" style="width: 0%;"></div>
+          </div>
+          <a href="#" class="level-hint">Capai level 10 untuk mendapatkan 250 poin tambahan &rarr;</a>
+        </div>
+
+        <div class="col-md-3 col-12 text-md-end text-start">
+          <div class="member-badge">Member</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-wrapper">
+      <button class="filter-btn active" onclick="filterVouchers('all', this)">Semua</button>
+      <button class="filter-btn" onclick="filterVouchers('makanan', this)">Makanan</button>
+      <button class="filter-btn" onclick="filterVouchers('minuman', this)">Minuman</button>
+    </div>
+
+    <div class="row g-4" id="voucherGrid">
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="navbar-loader.js"></script>
+<script>
+  const defaultVouchers = [
+    { id: 1, category: "Makanan", title: "Voucher UMKM Ibu Sri", mitra: "UMKM Ibu Sri", promo: "Diskon 10% All Variant Food", pts: 1200, stockLeft: 3, stockTotal: 10, address: "Jl. Kemerdekaan 5, Jakarta Selatan", icon: "hot-pot 2.png", active: true },
+    { id: 2, category: "Makanan", title: "Voucher Warung Pak Budi", mitra: "Warung Pak Budi", promo: "Diskon 15% Nasi Goreng Special", pts: 1500, stockLeft: 5, stockTotal: 10, address: "Jl. Sudirman No. 12, Jakarta Selatan", icon: "hot-pot 2.png", active: true },
+    { id: 3, category: "Minuman", title: "Voucher Kopi Kenangan Kita", mitra: "Kopi Kenangan Kita", promo: "Buy 1 Get 1 All Variant Coffee", pts: 2000, stockLeft: 2, stockTotal: 10, address: "Jl. Gatot Subroto No. 45, Jakarta Selatan", icon: "water-bottle 2.png", active: true },
+    { id: 4, category: "Makanan", title: "Voucher Ayam Geprek Sambal Ijo", mitra: "Ayam Geprek Sambal Ijo", promo: "Potongan Rp 10.000 Paket Hemat", pts: 1000, stockLeft: 8, stockTotal: 15, address: "Jl. Kebayoran Baru No. 8, Jakarta Selatan", icon: "hot-pot 2.png", active: true },
+    { id: 5, category: "Minuman", title: "Voucher Teh Solo Asli", mitra: "Teh Solo Asli", promo: "Diskon 20% Minuman Jumbo", pts: 800, stockLeft: 12, stockTotal: 20, address: "Jl. Tebet Raya No. 19, Jakarta Selatan", icon: "water-bottle 2.png", active: true },
+    { id: 6, category: "Makanan", title: "Bakso & Mie Ayam Perkasa", mitra: "Bakso & Mie Ayam Perkasa", promo: "Gratis Es Teh + Diskon 10%", pts: 1800, stockLeft: 4, stockTotal: 10, address: "Jl. Mampang Prapatan No. 3, Jakarta Selatan", icon: "hot-pot 2.png", active: true },
+    { id: 7, category: "Minuman", title: "Fresh Juice Sehat Organic", mitra: "Fresh Juice Sehat Organic", promo: "Diskon 25% Juice Smoothies", pts: 1100, stockLeft: 6, stockTotal: 15, address: "Jl. Panglima Polim No. 22, Jakarta Selatan", icon: "water-bottle 2.png", active: true }
+  ];
+
+  let currentFilterCategory = 'all';
+
+  function getVouchers() {
+    const data = localStorage.getItem("natura_vouchers");
+    if (!data) {
+      localStorage.setItem("natura_vouchers", JSON.stringify(defaultVouchers));
+      return defaultVouchers;
+    }
+    return JSON.parse(data);
+  }
+
+  function getUserPoints(username) {
+    if (!username) return 0;
+    const points = localStorage.getItem(`natura_user_points_${username}`) 
+                || localStorage.getItem(`natura_user_pts_${username}`) 
+                || "0";
+    return parseInt(points, 10) || 0;
+  }
+
+  function renderVouchersGrid() {
+    const vouchers = getVouchers();
+    const grid = document.getElementById("voucherGrid");
+    const username = localStorage.getItem("natura_user");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    if (vouchers.length === 0) {
+      grid.innerHTML = `<div class="col-12 text-center py-5 text-white-50">Belum ada voucher yang tersedia.</div>`;
+      return;
+    }
+
+    const currentPoints = getUserPoints(username);
+
+    vouchers.forEach(item => {
+      const catLower = (item.category || "").toLowerCase();
+      const isOutOfStock = item.stockLeft <= 0;
+      const notEnoughPoints = username ? (currentPoints < item.pts) : false;
+      const isBtnDisabled = !username || isOutOfStock || notEnoughPoints;
+
+      let btnLabel = 'Tukar';
+      let tooltipText = 'Tukar Voucher';
+
+      if (!username) {
+        tooltipText = 'Silakan masuk (login) untuk menukarkan voucher';
+      } else if (isOutOfStock) {
+        btnLabel = 'Habis';
+        tooltipText = 'Stok Habis';
+      } else if (notEnoughPoints) {
+        btnLabel = 'Poin Kurang';
+        tooltipText = 'Poin Anda tidak cukup untuk menukar voucher ini';
+      }
+
+      const iconImg = item.icon || (catLower === "minuman" ? "water-bottle 2.png" : "hot-pot 2.png");
+      const isHidden = (currentFilterCategory !== 'all' && catLower !== currentFilterCategory);
+
+      grid.innerHTML += `
+        <div class="col-lg-4 col-md-6 col-12 voucher-item" data-category="${catLower}" style="${isHidden ? 'display: none;' : ''}">
+          <div class="natura-card voucher-card">
+            <div class="voucher-header">
+              <div class="voucher-icon-box">
+                <img src="${iconImg}" alt="Voucher Icon">
+              </div>
+              <div>
+                <h3 class="voucher-title">${escapeHtml(item.title)}</h3>
+                <p class="voucher-desc">${escapeHtml(item.promo || '')}</p>
+              </div>
+            </div>
+            <div class="voucher-footer">
+              <div class="voucher-cost">${item.pts} pts</div>
+              <div class="voucher-action">
+                <button class="btn-tukar" ${isBtnDisabled ? 'disabled' : ''} 
+                        title="${tooltipText}"
+                        onclick="claimVoucher('${escapeJsString(item.title)}', ${item.pts}, '${escapeJsString(item.address || '')}', '${escapeJsString(item.promo || '')}', '${iconImg}')">
+                  ${btnLabel}
+                </button>
+                <span class="stock-tag">${isOutOfStock ? 'Stok Habis' : 'Tersisa ' + item.stockLeft + ' pcs'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function updatePointsDisplay() {
+    const username = localStorage.getItem("natura_user");
+    const userPointsDisplay = document.getElementById("userPointsDisplay");
+    const levelPts = document.getElementById("levelPts");
+    const progressBar = document.getElementById("progressBar");
+
+    if (userPointsDisplay) {
+      const ptsNum = getUserPoints(username);
+      userPointsDisplay.innerHTML = `${ptsNum.toLocaleString("id-ID")} <span>pts</span>`;
+
+      const targetPts = 1000;
+      const progressPts = Math.min(ptsNum, targetPts);
+      const percentage = Math.min(Math.round((progressPts / targetPts) * 100), 100);
+
+      if (levelPts) levelPts.textContent = `(${progressPts}/${targetPts} pts)`;
+      if (progressBar) progressBar.style.width = `${percentage}%`;
+    }
+
+    renderVouchersGrid();
+  }
+
+  function filterVouchers(category, btnElement) {
+    currentFilterCategory = category.toLowerCase();
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
+
+    const items = document.querySelectorAll('.voucher-item');
+    items.forEach(item => {
+      const itemCat = item.getAttribute('data-category');
+      if (currentFilterCategory === 'all' || itemCat === currentFilterCategory) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+  });
+}
+
+function escapeJsString(str) {
+  if (!str) return '';
+  return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+  document.addEventListener("DOMContentLoaded", () => {
+    updatePointsDisplay();
+  });
+</script>
+</body>
+</html>
